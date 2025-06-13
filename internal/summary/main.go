@@ -93,6 +93,25 @@ func main() {
     headers := []string{"OP", "REGISTRY", "KEY", "RESULT", "TIME", "SIZE"}
     // summary table limited columns only
 
+    // Build expanded list where each attempted key is its own row/detail
+    type attempt struct {
+        Entry       *Entry
+        Key         string
+        Pos         int
+        Total       int
+    }
+
+    var attempts []attempt
+    for _, e := range list {
+        keys := e.AttemptedKeys
+        if len(keys) == 0 {
+            keys = []string{e.Cache}
+        }
+        for i, k := range keys {
+            attempts = append(attempts, attempt{Entry: &e, Key: k, Pos: i + 1, Total: len(keys)})
+        }
+    }
+
     t := table.NewWriter()
     t.SetStyle(table.StyleRounded)
     colHeader := make(table.Row, len(headers))
@@ -104,25 +123,14 @@ func main() {
     green := color.New(color.FgGreen).SprintFunc()
     red := color.New(color.FgRed).SprintFunc()
 
-    for idx, e := range list {
+    for idx, at := range attempts {
+        e := at.Entry
         stepLower := strings.ToLower(e.Step)
 
         // determine key to display
-        keyDisplay := e.Cache
-        if e.HitKey != "" {
-            keyDisplay = e.HitKey
-        }
-
-        // append attempt position if multiple attempted keys
-        if len(e.AttemptedKeys) > 1 {
-            hitPos := 0
-            for i, k := range e.AttemptedKeys {
-                if k == e.HitKey {
-                    hitPos = i + 1
-                    break
-                }
-            }
-            keyDisplay = fmt.Sprintf("%s [%d/%d]", keyDisplay, hitPos, len(e.AttemptedKeys))
+        keyDisplay := at.Key
+        if at.Total > 1 {
+            keyDisplay = fmt.Sprintf("%s [%d/%d]", keyDisplay, at.Pos, at.Total)
         }
 
         // determine result string
@@ -130,12 +138,8 @@ func main() {
         if stepLower == "save" {
             result = green("✅")
         } else {
-            if e.HitKey != "" {
-                if len(e.AttemptedKeys) > 0 && e.AttemptedKeys[0] != e.HitKey {
-                    result = red("❌") + "➜" + green("✅")
-                } else {
-                    result = green("✅")
-                }
+            if at.Key == e.HitKey && at.Key != "" {
+                result = green("✅")
             }
         }
 
@@ -144,7 +148,10 @@ func main() {
             size = e.BytesTransferred
         }
 
-        row := table.Row{fmt.Sprintf("%02d", idx+1), e.CacheRegistry, keyDisplay, result, e.Duration, size}
+        icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
+        opVal := fmt.Sprintf("%s %02d", icon, idx+1)
+
+        row := table.Row{opVal, e.CacheRegistry, keyDisplay, result, e.Duration, size}
         t.AppendRow(row)
     }
     summaryStr := t.Render()
@@ -152,11 +159,12 @@ func main() {
     summaryWidth := len(strings.Split(summaryStr, "\n")[0])
 
     // detail sections
-    for idx, e := range list {
+    for idx, at := range attempts {
+        e := at.Entry
         stepLower := strings.ToLower(e.Step)
-        keyDisplay := e.Cache
-        if e.HitKey != "" {
-            keyDisplay = e.HitKey
+        keyDisplay := at.Key
+        if at.Total > 1 {
+            keyDisplay = fmt.Sprintf("%s [%d/%d]", keyDisplay, at.Pos, at.Total)
         }
         icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
         header := fmt.Sprintf("%s Operation %02d: %s \"%s\"", icon, idx+1, strings.Title(e.Step), keyDisplay)
@@ -173,16 +181,16 @@ func main() {
             detail.AppendRow(table.Row{colorize(k, "94"), v})
         }
 
-        // show attempted keys and hit key
+        // show attempted key info
         add("Key", keyDisplay)
-        if len(e.AttemptedKeys) > 0 {
-            add("Attempted Keys", strings.Join(e.AttemptedKeys, ", "))
+        if at.Total > 1 {
+            add("Attempt", fmt.Sprintf("%d of %d", at.Pos, at.Total))
         }
         if stepLower == "restore" {
-            if e.HitKey != "" {
-                add("Hit Key", fmt.Sprintf("%s %s", e.HitKey, green("✅")))
+            if at.Key == e.HitKey && at.Key != "" {
+                add("Outcome", green("✅"))
             } else {
-                add("Hit Key", red("❌"))
+                add("Outcome", red("❌"))
             }
         }
 
@@ -191,7 +199,7 @@ func main() {
         var resStr string
         if stepLower == "save" {
             resStr = green("✅")
-        } else if e.HitKey != "" {
+        } else if at.Key == e.HitKey && at.Key != "" {
             resStr = green("✅")
         } else {
             resStr = red("❌")
