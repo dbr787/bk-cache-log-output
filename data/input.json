@@ -1,6 +1,6 @@
 [
   {
-    "step": "restore",
+    "action": "restore",
     "cache": "npm-cache-v1",
     "cache_registry": "team-registry",
     "cache_hit": true,
@@ -19,7 +19,7 @@
     "hit_key": "node-linux-x86_64-7f3ad1c"
   },
   {
-    "step": "restore",
+    "action": "restore",
     "cache": "cypress-cache-v1",
     "cache_registry": "team-registry",
     "cache_hit": false,
@@ -41,7 +41,7 @@
     "completed_at": "2025-06-13T08:33:17.510Z"
   },
   {
-    "step": "save",
+    "action": "save",
     "cache": "npm-cache-v1",
     "cache_registry": "team-registry",
     "duration": "8.8s",
@@ -54,7 +54,7 @@
     "completed_at": "2025-06-13T08:33:19.661Z"
   },
   {
-    "step": "save",
+    "action": "save",
     "cache": "cypress-cache-v1",
     "cache_registry": "team-registry",
     "duration": "7.4s",
@@ -68,7 +68,7 @@
     "completed_at": "2025-06-13T08:33:24.911Z"
   },
   {
-    "step": "save",
+    "action": "save",
     "cache": "npm-cache-v1",
     "cache_registry": "team-registry",
     "duration": "5.3s",

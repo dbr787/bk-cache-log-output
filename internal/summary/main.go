@@ -13,7 +13,7 @@ import (
 )
 
 type Entry struct {
-    Step             string   `json:"step"` // restore or save
+    Action           string   `json:"action"` // restore or save
     Cache            string   `json:"cache"`
     CacheHit         bool     `json:"cache_hit"`
     Duration         string   `json:"duration"`
@@ -79,8 +79,8 @@ func main() {
         }
         for phase, arr := range m {
             for i := range arr {
-                if arr[i].Step == "" {
-                    arr[i].Step = phase
+                if arr[i].Action == "" {
+                    arr[i].Action = phase
                 }
                 list = append(list, arr[i])
             }
@@ -101,7 +101,7 @@ func main() {
     if strings.ToLower(*filter) == "restore" || strings.ToLower(*filter) == "save" {
         var filtered []Entry
         for _, e := range list {
-            if strings.ToLower(e.Step) == strings.ToLower(*filter) {
+            if strings.ToLower(e.Action) == strings.ToLower(*filter) {
                 filtered = append(filtered, e)
             }
         }
@@ -114,8 +114,8 @@ func main() {
     }
 
     // determine summary header icon
-    hasSave := any(list, func(e Entry) bool { return strings.ToLower(e.Step) == "save" })
-    hasRestore := any(list, func(e Entry) bool { return strings.ToLower(e.Step) == "restore" })
+    hasSave := any(list, func(e Entry) bool { return strings.ToLower(e.Action) == "save" })
+    hasRestore := any(list, func(e Entry) bool { return strings.ToLower(e.Action) == "restore" })
     iconHeader := "♻️" // default for restore/mixed
     if hasSave && !hasRestore {
         iconHeader = "💾"
@@ -151,7 +151,7 @@ func main() {
             keys = []string{e.Cache}
         }
 
-        stepLower := strings.ToLower(e.Step)
+        stepLower := strings.ToLower(e.Action)
         if stepLower == "save" {
             // only first key, dedupe by ID
             keys = keys[:1]
@@ -190,7 +190,7 @@ func main() {
 
     for idx, at := range attempts {
         e := at.Entry
-        stepLower := strings.ToLower(e.Step)
+        stepLower := strings.ToLower(e.Action)
 
         // determine key to display
         keyDisplay := fmt.Sprintf("[%d/%d]", at.Pos, at.Total)
@@ -252,7 +252,7 @@ func main() {
     // detail sections
     for idx, at := range attempts {
         e := at.Entry
-        stepLower := strings.ToLower(e.Step)
+        stepLower := strings.ToLower(e.Action)
         keyDisplay := fmt.Sprintf("[%d/%d]", at.Pos, at.Total)
         icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
         idVal := deriveID(*e)
@@ -282,7 +282,7 @@ func main() {
         }
 
         // rows in order: Action, ID, Key, Result
-        add("Action", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
+        add("Action", fmt.Sprintf("%s %s", strings.Title(e.Action), icon))
         // ID row (second row)
         add("ID", idVal)
         // key display with actual cache key + attempt indicator suffix
