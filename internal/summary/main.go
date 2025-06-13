@@ -151,15 +151,28 @@ func main() {
             result = red("💨 Miss")
         }
 
-        size := e.BytesWritten
+        // size per attempt logic
+        size := "-"
+        if stepLower == "save" {
+            if at.Pos == 1 {
+                size = e.BytesWritten
+            }
+        } else { // restore
+            if at.Key == e.HitKey && at.Key != "" {
+                size = e.BytesTransferred
+            }
+        }
         if size == "" {
-            size = e.BytesTransferred
+            size = "-"
         }
 
         opVal := fmt.Sprintf("%02d", idx+1)
-
         idVal := deriveID(*e)
-        row := table.Row{opVal, idVal, keyDisplay, result, e.Duration, size}
+        durVal := e.Duration
+        if durVal == "" {
+            durVal = "-"
+        }
+        row := table.Row{opVal, idVal, keyDisplay, result, durVal, size}
         t.AppendRow(row)
     }
     summaryStr := t.Render()
@@ -172,7 +185,8 @@ func main() {
         stepLower := strings.ToLower(e.Step)
         keyDisplay := fmt.Sprintf("[%d/%d]", at.Pos, at.Total)
         icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
-        header := fmt.Sprintf("%s Operation %02d: %s \"%s\"", icon, idx+1, strings.Title(e.Step), keyDisplay)
+        idVal := deriveID(*e)
+        header := fmt.Sprintf("%s Operation %02d: %s %s %s", icon, idx+1, strings.Title(e.Step), idVal, keyDisplay)
 
         detail := table.NewWriter()
         detail.SetStyle(table.StyleRounded)
