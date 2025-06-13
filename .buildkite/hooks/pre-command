@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export GO111MODULE=on
++++ ":open_file_folder: Cache Restore"
+go run ./internal/summary --phase "Restore" --json data/input.json
+---

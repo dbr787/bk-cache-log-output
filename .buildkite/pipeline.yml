@@ -3,4 +3,6 @@ steps:
     plugins:
       - docker#v3.9.0:
           image: golang:1.22-alpine
+          env:
+            BUILDKITE_HOOKS_IN_DOCKER: "true"
     command: "go run ./cmd/generate_log data/input.json"
