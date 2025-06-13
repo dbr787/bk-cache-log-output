@@ -245,8 +245,8 @@ func main() {
             resText = red("💨 Miss")
         }
 
-        // Header example: "♻️ 01: Restore node [1/1] 🎯 Hit"
-        header := fmt.Sprintf("%s %02d: %s %s %s %s", icon, idx+1, strings.Title(e.Step), idVal, keyDisplay, resText)
+        // Header example: "♻️ 01 node [1/1] 🎯 Hit"
+        header := fmt.Sprintf("%s %02d %s %s %s", icon, idx+1, idVal, keyDisplay, resText)
 
         detail := table.NewWriter()
         detail.SetStyle(table.StyleRounded)
