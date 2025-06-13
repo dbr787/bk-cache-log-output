@@ -168,9 +168,15 @@ func main() {
 
         opVal := fmt.Sprintf("%02d", idx+1)
         idVal := deriveID(*e)
-        durVal := e.Duration
-        if durVal == "" {
-            durVal = "-"
+        durVal := "-"
+        if stepLower == "save" {
+            if at.Pos == 1 {
+                durVal = e.Duration
+            }
+        } else { // restore
+            if at.Key == e.HitKey && at.Key != "" {
+                durVal = e.Duration
+            }
         }
         row := table.Row{opVal, idVal, keyDisplay, result, durVal, size}
         t.AppendRow(row)
