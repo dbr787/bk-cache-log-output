@@ -6,6 +6,7 @@ import (
     "fmt"
     "log"
     "os"
+    "strings"
 
     "github.com/fatih/color"
     "github.com/jedib0t/go-pretty/v6/table"
@@ -21,6 +22,9 @@ type Step struct {
     Files         int    `json:"files"`
     Dirs          int    `json:"dirs"`
     CacheRegistry string `json:"cache_registry"`
+    BytesTransferred string `json:"bytes_transferred"`
+    BytesWritten string `json:"bytes_written"`
+    CompressionRatio string `json:"compression_ratio"`
 }
 
 func main() {
@@ -43,26 +47,51 @@ func main() {
         log.Fatalf("decode: %v", err)
     }
 
-    // Build table
-    t := table.NewWriter()
-    t.SetStyle(table.StyleRounded)
-    headerColors := table.RowConfig{AutoMerge: false}
-    t.SetTitle(fmt.Sprintf("%s Cache", *phase))
-    t.Style().Title.Align = text.AlignCenter
-
     green := color.New(color.FgGreen).SprintFunc()
     red := color.New(color.FgRed).SprintFunc()
 
-    t.AppendHeader(table.Row{"STEP", "DURATION", "CACHE HIT", "SIZE", "TRANSFER SPEED", "FILES", "DIRS", "CACHE REGISTRY"}, headerColors)
-
     for _, s := range steps {
-        hit := red("❌")
-        if s.CacheHit {
-            hit = green("✅")
-        }
-        row := table.Row{s.Step, s.Duration, hit, s.Size, s.TransferSpeed, s.Files, s.Dirs, s.CacheRegistry}
-        t.AppendRow(row)
-    }
+        t := table.NewWriter()
+        t.SetStyle(table.StyleRounded)
+        t.SetTitle(fmt.Sprintf("%s Cache - %s", *phase, s.Step))
+        t.Style().Title.Align = text.AlignCenter
+        t.AppendHeader(table.Row{"FIELD", "VALUE"})
 
-    fmt.Println(t.Render())
+        rows := []table.Row{{"Operation", s.Step}}
+        // Common fields
+        if s.Duration != "" {
+            rows = append(rows, table.Row{"Duration", s.Duration})
+        }
+
+        // Determine per-operation fields
+        switch strings.ToLower(s.Step) {
+        case "restore":
+            rows = append(rows,
+                table.Row{"Cache Hit", func() interface{} { if s.CacheHit { return green("✅") }; return red("❌") }()},
+                table.Row{"Directories", s.Dirs},
+                table.Row{"Files", s.Files},
+                table.Row{"Bytes Transferred", s.BytesTransferred},
+                table.Row{"Transfer Speed", s.TransferSpeed},
+            )
+        case "save":
+            rows = append(rows,
+                table.Row{"Directories", s.Dirs},
+                table.Row{"Files", s.Files},
+                table.Row{"Bytes Written", s.BytesWritten},
+                table.Row{"Compression Ratio", s.CompressionRatio},
+                table.Row{"Bytes Transferred", s.BytesTransferred},
+                table.Row{"Transfer Speed", s.TransferSpeed},
+            )
+        default:
+            // generic output
+            rows = append(rows, table.Row{"Cache Hit", func() interface{} { if s.CacheHit { return green("✅") }; return red("❌") }()})
+        }
+
+        rows = append(rows, table.Row{"Cache Registry", s.CacheRegistry})
+
+        for _, r := range rows {
+            t.AppendRow(r)
+        }
+        fmt.Println(t.Render())
+    }
 }
