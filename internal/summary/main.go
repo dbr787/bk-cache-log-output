@@ -100,13 +100,14 @@ func main() {
     t.AppendHeader(colHeader)
 
     green := color.New(color.FgGreen).SprintFunc()
+    red := color.New(color.FgRed).SprintFunc()
 
     for idx, e := range list {
         stepLower := strings.ToLower(e.Step)
         icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
-        result := "❌"
+        result := red("❌")
         if stepLower == "save" {
-            result = green("✔ success")
+            result = green("✅")
         } else if e.CacheHit {
             result = green("✅")
         }
@@ -121,37 +122,43 @@ func main() {
 
     // detail sections
     for idx, e := range list {
-        sep := strings.Repeat("━", 70)
         icon := map[string]string{"save": "💾", "restore": "🔍"}[strings.ToLower(e.Step)]
-        fmt.Println(sep)
-        fmt.Printf("%s Operation #%d: %s \"%s\"\n", icon, idx+1, strings.Title(e.Step), e.Cache)
-        fmt.Println(sep)
+        header := fmt.Sprintf("%s Operation #%02d: %s \"%s\"", icon, idx+1, strings.Title(e.Step), e.Cache)
+        hline := strings.Repeat("─", len(header))
+        fmt.Println(hline)
+        fmt.Println(header)
+        fmt.Println(hline)
 
-        kv := func(k, v string) {
-            if v == "" || v == "0" {
+        detail := table.NewWriter()
+        detail.SetStyle(table.StyleRounded)
+        detail.Style().Options.SeparateColumns = false
+        add := func(k, v string) {
+            if v == "" {
                 return
             }
-            fmt.Printf("  %-18s %s\n", k+":", v)
+            detail.AppendRow(table.Row{colorize(k, "94"), v})
         }
-        kv("Type", strings.Title(e.Step))
-        kv("Registry", e.CacheRegistry)
-        kv("Key", e.Cache)
-        if strings.ToLower(e.Step) == "restore" {
-            kv("Cache Hit", fmt.Sprintf("%v", e.CacheHit))
+        add("Type", strings.Title(e.Step))
+        add("Registry", e.CacheRegistry)
+        add("Key", e.Cache)
+        stepLower := strings.ToLower(e.Step)
+        if stepLower == "restore" {
+            add("Cache Hit", result)
         } else {
-            kv("Cache Status", "success")
+            add("Cache Status", result)
         }
-        kv("Path", e.Path)
-        kv("Checksum File", e.ChecksumFile)
-        kv("Checksum SHA", e.ChecksumSHA)
-        kv("Compression Format", e.CompressionFormat)
-        kv("Compressed Size", e.BytesWritten)
-        kv("Uncompressed Size", e.BytesTransferred)
-        kv("Compression Ratio", e.CompressionRatio)
-        kv("Transfer Speed", e.TransferSpeed)
-        kv("Duration", e.Duration)
-        kv("Started At", e.StartedAt)
-        kv("Completed At", e.CompletedAt)
-        fmt.Println()
+        add("Path", e.Path)
+        add("Checksum File", e.ChecksumFile)
+        add("Checksum SHA", e.ChecksumSHA)
+        add("Compression Format", e.CompressionFormat)
+        add("Compressed Size", e.BytesWritten)
+        add("Uncompressed Size", e.BytesTransferred)
+        add("Compression Ratio", e.CompressionRatio)
+        add("Transfer Speed", e.TransferSpeed)
+        add("Duration", e.Duration)
+        add("Started At", e.StartedAt)
+        add("Completed At", e.CompletedAt)
+
+        fmt.Println(detail.Render())
     }
 }
