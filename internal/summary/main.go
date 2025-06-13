@@ -36,6 +36,15 @@ type Entry struct {
 
 func colorize(s, code string) string { return fmt.Sprintf("\033[%sm%s\033[0m", code, s) }
 
+func makeBorderless(w *table.Writer) {
+    st := table.StyleDefault
+    st.Box = table.Box{}
+    st.Options.DrawBorder = false
+    st.Options.SeparateColumns = false
+    st.Options.SeparateRows = false
+    w.SetStyle(st)
+}
+
 func any(list []Entry, fn func(Entry) bool) bool { for _, e := range list { if fn(e) { return true } }; return false }
 func contains(sl []string, s string) bool { for _, v := range sl { if v == s { return true } }; return false }
 
@@ -134,10 +143,10 @@ func main() {
     }
 
     t := table.NewWriter()
-    t.SetStyle(table.StyleRounded)
+    makeBorderless(t)
     colHeader := make(table.Row, len(headers))
     for i, h := range headers {
-        colHeader[i] = colorize(h, "94")
+        colHeader[i] = colorize(h, "4;94")
     }
     t.AppendHeader(colHeader)
 
@@ -205,7 +214,7 @@ func main() {
         header := fmt.Sprintf("%s Operation %02d: %s %s %s", icon, idx+1, strings.Title(e.Step), idVal, keyDisplay)
 
         detail := table.NewWriter()
-        detail.SetStyle(table.StyleRounded)
+        makeBorderless(detail)
         detail.SetAllowedRowLength(summaryWidth)
         detail.SetTitle(header)
         detail.Style().Options.SeparateColumns = false
