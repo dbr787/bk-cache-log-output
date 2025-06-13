@@ -23,14 +23,28 @@
     "cache": "cypress-cache-v1",
     "cache_registry": "team-registry",
     "cache_hit": false,
-    "duration": "12.8s",
+    "duration": "0.18s",
     "path": ".cache/Cypress",
     "checksum_file": "cypress.lock",
     "checksum_sha": "b2c1...f8a",
     "attempted_keys": ["cypress-cache-v1", "cypress-cache-v2", "cypress-cache-legacy"],
     "hit_key": "cypress-cache-legacy",
     "started_at": "2025-06-13T08:33:10.861Z",
-    "completed_at": "2025-06-13T08:33:19.261Z"
+    "completed_at": "2025-06-13T08:33:11.041Z"
+  },
+  {
+    "step": "restore",
+    "cache": "cypress-cache-v2",
+    "cache_registry": "team-registry",
+    "cache_hit": false,
+    "duration": "0.22s",
+    "path": ".cache/Cypress",
+    "checksum_file": "cypress.lock",
+    "checksum_sha": "b2c1...f8b",
+    "attempted_keys": [],
+    "hit_key": "",
+    "started_at": "2025-06-13T08:33:11.041Z",
+    "completed_at": "2025-06-13T08:33:11.261Z"
   },
   {
     "step": "save",
