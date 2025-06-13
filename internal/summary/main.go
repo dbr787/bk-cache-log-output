@@ -9,6 +9,7 @@ import (
 
     "github.com/fatih/color"
     "github.com/jedib0t/go-pretty/v6/table"
+    "github.com/jedib0t/go-pretty/v6/text"
 )
 
 type Step struct {
@@ -45,7 +46,7 @@ func main() {
     t.SetStyle(table.StyleRounded)
     headerColors := table.RowConfig{AutoMerge: false}
     t.SetTitle(fmt.Sprintf("%s Cache", *phase))
-    t.Style().Title.Align = table.AlignCenter
+    t.Style().Title.Align = text.AlignCenter
 
     green := color.New(color.FgGreen).SprintFunc()
     red := color.New(color.FgRed).SprintFunc()
