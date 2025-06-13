@@ -1,3 +1,6 @@
 steps:
   - label: ":snake: Generate log"
+    plugins:
+      - docker#v3.9.0:
+          image: python:3.11-slim
     command: "python scripts/generate_log.py data/input.json"
