@@ -1,0 +1,3 @@
+steps:
+  - label: ":snake: Generate log"
+    command: "python scripts/generate_log.py data/input.json"
