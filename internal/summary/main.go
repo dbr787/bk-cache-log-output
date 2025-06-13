@@ -113,7 +113,7 @@ func main() {
         return
     }
 
-    headers := []string{"OP", "ID", "KEY", "RESULT", "TIME", "SIZE"}
+    headers := []string{"#", "ID", "KEY", "RESULT", "TIME", "SIZE"}
     // summary table limited columns only
 
     deriveID := func(e Entry) string {
@@ -228,10 +228,10 @@ func main() {
             detail.AppendRow(table.Row{colorize(k, "94"), v})
         }
 
-        // rows in order: Operation, Key, Result
-        add("Operation", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
-
-        // key display (with attempt indicator if multiple)
+        // rows in order: Action, ID, Key, Result
+        add("Action", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
+        // ID row (second row)
+        add("ID", idVal)
         add("Key", keyDisplay)
 
         // Result row with Hit/Miss/Saved wording (recompute for scope)
