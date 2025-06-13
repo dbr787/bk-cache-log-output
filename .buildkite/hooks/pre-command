@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-echo '+++ :buildkite: [Cache Restore](https://buildkite.com/docs)' # clickable link
+echo '+++ :buildkite: Cache Restore|https://buildkite.com/docs'
 docker run --rm -v "$PWD":/workdir -w /workdir golang:1.22-alpine \
   go run ./internal/summary --phase Restore --json data/input.json 2>/dev/null
 echo '---'
