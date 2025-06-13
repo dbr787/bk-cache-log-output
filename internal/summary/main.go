@@ -50,12 +50,14 @@ func main() {
     green := color.New(color.FgGreen).SprintFunc()
     red := color.New(color.FgRed).SprintFunc()
 
+    func colorize(s string, code string) string {
+        return fmt.Sprintf("\033[%sm%s\033[0m", code, s)
+    }
+
     for _, s := range steps {
         t := table.NewWriter()
         t.SetStyle(table.StyleRounded)
-        t.SetTitle(fmt.Sprintf("%s Cache - %s", *phase, s.Step))
         t.Style().Title.Align = text.AlignCenter
-        t.AppendHeader(table.Row{"FIELD", "VALUE"})
 
         rows := []table.Row{{"Operation", s.Step}}
         // Common fields
@@ -88,6 +90,11 @@ func main() {
         }
 
         rows = append(rows, table.Row{"Cache Registry", s.CacheRegistry})
+
+        // colorize field names
+        for i, r := range rows {
+            rows[i][0] = colorize(fmt.Sprintf("%v", r[0]), "94") // bright blue field names
+        }
 
         for _, r := range rows {
             t.AppendRow(r)
