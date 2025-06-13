@@ -113,7 +113,7 @@ func main() {
         return
     }
 
-    headers := []string{"♻️", "ID", "KEY", "RESULT", "TIME", "SIZE"}
+    headers := []string{"♻️", "ID", "KEY", "RESULT", "TIME", "COMP", "RATIO", "SPEED", "SIZE"}
     // summary table limited columns only
 
     deriveID := func(e Entry) string {
@@ -148,6 +148,8 @@ func main() {
 
     t := table.NewWriter()
     t.SetStyle(table.StyleRounded)
+    // remove border/underline for header
+    makeBorderless(t)
     colHeader := make(table.Row, len(headers))
     for i, h := range headers {
         colHeader[i] = colorize(h, "4;94")
@@ -176,19 +178,29 @@ func main() {
 
         // size per attempt logic
         size := "-"
+        compVal := "-"
+        ratioVal := "-"
+        speedVal := "-"
         if stepLower == "save" {
             if at.Pos == 1 {
                 size = e.BytesWritten
+                compVal = e.BytesWritten
+                ratioVal = e.CompressionRatio
+                speedVal = e.TransferSpeed
             }
         } else { // restore
             if at.Key == e.HitKey && at.Key != "" {
                 size = e.BytesTransferred
+                // For restore hit, compressed size is size (bytes transferred)
+                compVal = e.BytesTransferred
+                speedVal = e.TransferSpeed
             }
         }
-        if size == "" {
-            size = "-"
+        for _, v := range []*string{&size, &compVal, &ratioVal, &speedVal} {
+            if *v == "" {
+                *v = "-"
+            }
         }
-
         opVal := fmt.Sprintf("%02d", idx+1)
         idVal := deriveID(*e)
         durVal := "-"
@@ -201,7 +213,7 @@ func main() {
                 durVal = e.Duration
             }
         }
-        row := table.Row{opVal, idVal, keyDisplay, result, durVal, size}
+        row := table.Row{opVal, idVal, keyDisplay, result, durVal, compVal, ratioVal, speedVal, size}
         t.AppendRow(row)
     }
     summaryStr := t.Render()
