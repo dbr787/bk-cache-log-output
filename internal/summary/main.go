@@ -6,15 +6,14 @@ import (
     "fmt"
     "log"
     "os"
-    "sort"
     "strings"
 
     "github.com/fatih/color"
     "github.com/jedib0t/go-pretty/v6/table"
 )
 
-// Entry describes one cache operation record
 type Entry struct {
+    Step             string `json:"step"` // restore or save
     Cache            string `json:"cache"`
     CacheHit         bool   `json:"cache_hit"`
     Duration         string `json:"duration"`
@@ -27,9 +26,10 @@ type Entry struct {
     CacheRegistry    string `json:"cache_registry"`
 }
 
-func colorize(s string, code string) string {
-    return fmt.Sprintf("\033[%sm%s\033[0m", code, s)
-}
+func colorize(s, code string) string { return fmt.Sprintf("\033[%sm%s\033[0m", code, s) }
+
+func any(list []Entry, fn func(Entry) bool) bool { for _, e := range list { if fn(e) { return true } }; return false }
+func contains(sl []string, s string) bool { for _, v := range sl { if v == s { return true } }; return false }
 
 func main() {
     jsonPath := flag.String("json", "", "path to json file")
@@ -44,116 +44,53 @@ func main() {
     }
     defer f.Close()
 
-    // Decode as generic map
-    var raw map[string][]Entry
-    if err := json.NewDecoder(f).Decode(&raw); err != nil {
-        log.Fatalf("decode: %v", err)
+    var list []Entry
+    if err := json.NewDecoder(f).Decode(&list); err != nil {
+        log.Fatalf("unmarshal: %v", err)
     }
 
-    phases := []string{"restore", "save"}
-    // include any extra phases in alpha order
-    for phase := range raw {
-        if phase != "restore" && phase != "save" {
-            phases = append(phases, phase)
-        }
+    if len(list) == 0 {
+        fmt.Println("no cache entries to display")
+        return
     }
-    sort.Strings(phases)
+
+    headers := []string{"OP", "REGISTRY", "CACHE", "HIT", "DURATION"}
+    if any(list, func(e Entry) bool { return e.Dirs != 0 }) { headers = append(headers, "DIRS") }
+    if any(list, func(e Entry) bool { return e.Files != 0 }) { headers = append(headers, "FILES") }
+    if any(list, func(e Entry) bool { return e.BytesWritten != "" }) { headers = append(headers, "BYTES WRITTEN") }
+    if any(list, func(e Entry) bool { return e.CompressionRatio != "" }) { headers = append(headers, "COMPRESSION RATIO") }
+    if any(list, func(e Entry) bool { return e.BytesTransferred != "" }) { headers = append(headers, "DATA XFER") }
+    if any(list, func(e Entry) bool { return e.TransferSpeed != "" }) { headers = append(headers, "SPEED") }
+
+    t := table.NewWriter()
+    t.SetStyle(table.StyleRounded)
+    colHeader := make(table.Row, len(headers))
+    for i, h := range headers {
+        colHeader[i] = colorize(h, "94")
+    }
+    t.AppendHeader(colHeader)
 
     green := color.New(color.FgGreen).SprintFunc()
     red := color.New(color.FgRed).SprintFunc()
 
-    for _, p := range phases {
-        entries, ok := raw[p]
-        if !ok || len(entries) == 0 {
-            continue
+    for _, e := range list {
+        icon := "💾" // save default
+        if strings.ToLower(e.Step) == "restore" {
+            icon = "♻️"
         }
-
-        t := table.NewWriter()
-        t.SetStyle(table.StyleRounded)
-
-        // Determine columns present
-        headers := []string{"REGISTRY", "CACHE"}
-        if any(entries, func(e Entry) bool { return true }) { // placeholder keep order
+        row := table.Row{icon, e.CacheRegistry, e.Cache}
+        hit := red("❌")
+        if e.CacheHit {
+            hit = green("✅")
         }
-        headers = append(headers, "HIT", "DURATION")
-        if any(entries, func(e Entry) bool { return e.Dirs != 0 }) {
-            headers = append(headers, "DIRS")
-        }
-        if any(entries, func(e Entry) bool { return e.Files != 0 }) {
-            headers = append(headers, "FILES")
-        }
-        if any(entries, func(e Entry) bool { return e.BytesWritten != "" }) {
-            headers = append(headers, "BYTES WRITTEN")
-        }
-        if any(entries, func(e Entry) bool { return e.CompressionRatio != "" }) {
-            headers = append(headers, "COMPRESSION RATIO")
-        }
-        if any(entries, func(e Entry) bool { return e.BytesTransferred != "" }) {
-            headers = append(headers, "DATA XFER")
-        }
-        if any(entries, func(e Entry) bool { return e.TransferSpeed != "" }) {
-            headers = append(headers, "SPEED")
-        }
-
-        emoji := "💾"
-        if p == "restore" {
-            emoji = "♻️"
-        }
-        titleCells := make(table.Row, len(headers))
-        titleCells[0] = fmt.Sprintf("%s %s Cache", emoji, strings.Title(p))
-        t.AppendHeader(titleCells, table.RowConfig{AutoMerge: true})
-
-        coloredHeader := make(table.Row, len(headers))
-        for i, h := range headers {
-            coloredHeader[i] = colorize(strings.ToUpper(h), "94")
-        }
-        t.AppendHeader(coloredHeader)
-
-        for _, e := range entries {
-            row := table.Row{e.CacheRegistry, e.Cache}
-            hit := red("❌")
-            if e.CacheHit {
-                hit = green("✅")
-            }
-            row = append(row, hit, e.Duration)
-            if contains(headers, "DIRS") {
-                row = append(row, e.Dirs)
-            }
-            if contains(headers, "FILES") {
-                row = append(row, e.Files)
-            }
-            if contains(headers, "BYTES WRITTEN") {
-                row = append(row, e.BytesWritten)
-            }
-            if contains(headers, "COMPRESSION RATIO") {
-                row = append(row, e.CompressionRatio)
-            }
-            if contains(headers, "DATA XFER") {
-                row = append(row, e.BytesTransferred)
-            }
-            if contains(headers, "SPEED") {
-                row = append(row, e.TransferSpeed)
-            }
-            t.AppendRow(row)
-        }
-        fmt.Println(t.Render())
+        row = append(row, hit, e.Duration)
+        if contains(headers, "DIRS") { row = append(row, e.Dirs) }
+        if contains(headers, "FILES") { row = append(row, e.Files) }
+        if contains(headers, "BYTES WRITTEN") { row = append(row, e.BytesWritten) }
+        if contains(headers, "COMPRESSION RATIO") { row = append(row, e.CompressionRatio) }
+        if contains(headers, "DATA XFER") { row = append(row, e.BytesTransferred) }
+        if contains(headers, "SPEED") { row = append(row, e.TransferSpeed) }
+        t.AppendRow(row)
     }
-}
-
-func any(entries []Entry, fn func(Entry) bool) bool {
-    for _, e := range entries {
-        if fn(e) {
-            return true
-        }
-    }
-    return false
-}
-
-func contains(sl []string, s string) bool {
-    for _, v := range sl {
-        if v == s {
-            return true
-        }
-    }
-    return false
+    fmt.Println(t.Render())
 }
