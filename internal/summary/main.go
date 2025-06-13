@@ -74,6 +74,16 @@ func main() {
         }
     }
 
+    // auto-filter based on Buildkite hook phase if user didn't specify a filter explicitly (still "all")
+    if *filter == "all" {
+        phaseEnv := os.Getenv("BUILDKITE_HOOK_PHASE")
+        if strings.Contains(strings.ToLower(phaseEnv), "pre-command") {
+            *filter = "restore"
+        } else if strings.Contains(strings.ToLower(phaseEnv), "post-command") {
+            *filter = "save"
+        }
+    }
+
     // apply filter
     if strings.ToLower(*filter) == "restore" || strings.ToLower(*filter) == "save" {
         var filtered []Entry
