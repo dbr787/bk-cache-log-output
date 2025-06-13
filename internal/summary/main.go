@@ -113,7 +113,15 @@ func main() {
         return
     }
 
-    headers := []string{"♻️", "ID", "KEY", "RESULT", "TIME", "COMP", "RATIO", "SPEED", "SIZE"}
+    // determine summary header icon
+    hasSave := any(list, func(e Entry) bool { return strings.ToLower(e.Step) == "save" })
+    hasRestore := any(list, func(e Entry) bool { return strings.ToLower(e.Step) == "restore" })
+    iconHeader := "♻️" // default for restore/mixed
+    if hasSave && !hasRestore {
+        iconHeader = "💾"
+    }
+
+    headers := []string{iconHeader, "ID", "KEY", "RESULT", "TIME", "COMP", "RATIO", "SPEED", "SIZE"}
     // summary table limited columns only
 
     deriveID := func(e Entry) string {
@@ -151,7 +159,7 @@ func main() {
     // use default rounded borders
     colHeader := make(table.Row, len(headers))
     for i, h := range headers {
-        colHeader[i] = colorize(h, "4;94")
+        colHeader[i] = colorize(h, "94")
     }
     t.AppendHeader(colHeader)
 
