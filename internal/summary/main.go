@@ -72,10 +72,10 @@ func main() {
         t.SetStyle(table.StyleRounded)
 
         // Determine columns present
-        headers := []string{"CACHE"}
+        headers := []string{"REGISTRY", "CACHE"}
         if any(entries, func(e Entry) bool { return true }) { // placeholder keep order
         }
-        headers = append(headers, "CACHE HIT", "DURATION")
+        headers = append(headers, "HIT", "DURATION")
         if any(entries, func(e Entry) bool { return e.Dirs != 0 }) {
             headers = append(headers, "DIRS")
         }
@@ -89,14 +89,19 @@ func main() {
             headers = append(headers, "COMPRESSION RATIO")
         }
         if any(entries, func(e Entry) bool { return e.BytesTransferred != "" }) {
-            headers = append(headers, "BYTES XFER")
+            headers = append(headers, "DATA XFER")
         }
         if any(entries, func(e Entry) bool { return e.TransferSpeed != "" }) {
             headers = append(headers, "SPEED")
         }
-        headers = append(headers, "CACHE REGISTRY")
 
-        // color header names
+        emoji := "💾"
+        if p == "restore" {
+            emoji = "♻️"
+        }
+        titleRow := table.Row{fmt.Sprintf("%s %s Cache", emoji, strings.Title(p))}
+        t.AppendHeader(titleRow, table.RowConfig{AutoMerge: true})
+
         coloredHeader := make(table.Row, len(headers))
         for i, h := range headers {
             coloredHeader[i] = colorize(strings.ToUpper(h), "94")
@@ -104,7 +109,7 @@ func main() {
         t.AppendHeader(coloredHeader)
 
         for _, e := range entries {
-            row := table.Row{e.Cache}
+            row := table.Row{e.CacheRegistry, e.Cache}
             hit := red("❌")
             if e.CacheHit {
                 hit = green("✅")
@@ -122,16 +127,14 @@ func main() {
             if contains(headers, "COMPRESSION RATIO") {
                 row = append(row, e.CompressionRatio)
             }
-            if contains(headers, "BYTES XFER") {
+            if contains(headers, "DATA XFER") {
                 row = append(row, e.BytesTransferred)
             }
             if contains(headers, "SPEED") {
                 row = append(row, e.TransferSpeed)
             }
-            row = append(row, e.CacheRegistry)
             t.AppendRow(row)
         }
-        fmt.Printf("\n%s Cache\n", strings.Title(p))
         fmt.Println(t.Render())
     }
 }
