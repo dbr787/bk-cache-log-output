@@ -90,7 +90,7 @@ func main() {
         return
     }
 
-    headers := []string{"#", "OP", "REGISTRY", "KEY", "RESULT", "TIME", "SIZE"}
+    headers := []string{"OP", "REGISTRY", "KEY", "RESULT", "TIME", "SIZE"}
     // summary table limited columns only
 
     t := table.NewWriter()
@@ -114,6 +114,18 @@ func main() {
             keyDisplay = e.HitKey
         }
 
+        // append attempt position if multiple attempted keys
+        if len(e.AttemptedKeys) > 1 {
+            hitPos := 0
+            for i, k := range e.AttemptedKeys {
+                if k == e.HitKey {
+                    hitPos = i + 1
+                    break
+                }
+            }
+            keyDisplay = fmt.Sprintf("%s [%d/%d]", keyDisplay, hitPos, len(e.AttemptedKeys))
+        }
+
         // determine result string
         result := red("❌")
         if stepLower == "save" {
@@ -133,7 +145,7 @@ func main() {
             size = e.BytesTransferred
         }
 
-        row := table.Row{fmt.Sprintf("%02d", idx+1), icon, e.CacheRegistry, keyDisplay, result, e.Duration, size}
+        row := table.Row{fmt.Sprintf("%02d", idx+1), e.CacheRegistry, keyDisplay, result, e.Duration, size}
         t.AppendRow(row)
     }
     summaryStr := t.Render()
@@ -147,7 +159,7 @@ func main() {
         if e.HitKey != "" {
             keyDisplay = e.HitKey
         }
-        icon := map[string]string{"save": "💾", "restore": "🔍"}[stepLower]
+        icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
         header := fmt.Sprintf("%s Operation %02d: %s \"%s\"", icon, idx+1, strings.Title(e.Step), keyDisplay)
 
         detail := table.NewWriter()
