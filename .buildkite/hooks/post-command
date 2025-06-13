@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 export GO111MODULE=on
--+++ ":floppy_disk: Cache Save"
-+echo '+++ ":floppy_disk: Cache Save"'
- go run ./internal/summary --phase "Save" --json data/input.json
-----
-+echo '---'
+echo '+++ ":floppy_disk: Cache Save"'
+docker run --rm -v "$PWD":/workdir -w /workdir golang:1.22-alpine \
+  go run ./internal/summary --phase Save --json data/input.json
+echo '---'
