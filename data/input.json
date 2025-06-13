@@ -5,7 +5,7 @@
     "cache_registry": "team-registry",
     "cache_hit": true,
     "duration": "850ms",
-    "path": "./node_modules",
+    "path": "./node_modules\n.next/cache",
     "checksum_file": "package-lock.json",
     "checksum_sha": "7f3a...d1c",
     "compression_format": "zstd",
@@ -15,8 +15,8 @@
     "transfer_speed": "11.3MB/s",
     "started_at": "2025-06-13T08:33:10.010Z",
     "completed_at": "2025-06-13T08:33:10.860Z",
-    "attempted_keys": ["npm-cache-v1"],
-    "hit_key": "npm-cache-v1"
+    "attempted_keys": ["node-linux-x86_64-7f3ad1c", "node-linux-x86_64-latest"],
+    "hit_key": "node-linux-x86_64-7f3ad1c"
   },
   {
     "step": "restore",
@@ -27,8 +27,12 @@
     "path": ".cache/Cypress",
     "checksum_file": "cypress.lock",
     "checksum_sha": "b2c1...f8a",
-    "attempted_keys": ["cypress-cache-v1", "cypress-cache-v2", "cypress-cache-legacy"],
-    "hit_key": "cypress-cache-legacy",
+    "attempted_keys": [
+      "cypress-linux-x86_64-b2c1f8a",
+      "cypress-linux-x86_64-latest",
+      "cypress-legacy"
+    ],
+    "hit_key": "cypress-legacy",
     "bytes_transferred": "450MB",
     "transfer_speed": "60.0MB/s",
     "compression_ratio": "2.7x",
@@ -41,7 +45,7 @@
     "cache": "npm-cache-v1",
     "cache_registry": "team-registry",
     "duration": "8.8s",
-    "path": "./node_modules",
+    "path": "./node_modules\n.next/cache",
     "bytes_transferred": "350MB",
     "transfer_speed": "40.0MB/s",
     "compression_ratio": "2.9x",
@@ -68,7 +72,7 @@
     "cache": "npm-cache-v1",
     "cache_registry": "team-registry",
     "duration": "5.3s",
-    "path": "./node_modules",
+    "path": "./node_modules\n.next/cache",
     "bytes_written": "160MB",
     "bytes_transferred": "480MB",
     "compression_ratio": "3.0x",
