@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 export GO111MODULE=on
-+++ ":floppy_disk: Cache Save"
-go run ./internal/summary --phase "Save" --json data/input.json
----
+-+++ ":floppy_disk: Cache Save"
++echo '+++ ":floppy_disk: Cache Save"'
+ go run ./internal/summary --phase "Save" --json data/input.json
+----
++echo '---'
