@@ -144,6 +144,7 @@ func main() {
     }
 
     var attempts []attempt
+    seenSave := make(map[string]bool)
     for _, e := range list {
         keys := e.AttemptedKeys
         if len(keys) == 0 {
@@ -152,6 +153,11 @@ func main() {
         // For save steps, only include the primary key (first) to avoid multiple rows per save
         if strings.ToLower(e.Step) == "save" && len(keys) > 0 {
             keys = keys[:1]
+            idVal := deriveID(e)
+            if seenSave[idVal] {
+                continue // skip duplicate save entry for same ID
+            }
+            seenSave[idVal] = true
         }
         for i, k := range keys {
             attempts = append(attempts, attempt{Entry: &e, Key: k, Pos: i + 1, Total: len(keys)})
