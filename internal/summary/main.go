@@ -121,7 +121,7 @@ func main() {
         iconHeader = "💾"
     }
 
-    headers := []string{iconHeader, "ID", "KEY", "RESULT", "TIME", "COMP", "RATIO", "SPEED", "SIZE"}
+    headers := []string{iconHeader, "ID", "KEY", "RESULT", "TIME", "SIZE", "COMP", "RATIO", "SPEED"}
     // summary table limited columns only
 
     deriveID := func(e Entry) string {
@@ -220,7 +220,7 @@ func main() {
                 durVal = e.Duration
             }
         }
-        row := table.Row{opVal, idVal, keyDisplay, result, durVal, compVal, ratioVal, speedVal, size}
+        row := table.Row{opVal, idVal, keyDisplay, result, durVal, size, compVal, ratioVal, speedVal}
         t.AppendRow(row)
     }
     summaryStr := t.Render()
