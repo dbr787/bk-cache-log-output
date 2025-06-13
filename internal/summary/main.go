@@ -216,11 +216,11 @@ func main() {
             detail.AppendRow(table.Row{colorize(k, "94"), v})
         }
 
-        // show attempted key info
+        // rows in order: Operation, Key, Result
+        add("Operation", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
+
+        // key display (with attempt indicator if multiple)
         add("Key", keyDisplay)
-        if at.Total > 1 {
-            add("Attempt", fmt.Sprintf("%d of %d", at.Pos, at.Total))
-        }
 
         // Result row with Hit/Miss/Saved wording (recompute for scope)
         var resText string
@@ -233,7 +233,6 @@ func main() {
         }
         add("Result", resText)
 
-        add("Operation", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
         add("Registry", e.CacheRegistry)
         add("Paths", e.Path)
         add("Checksum File", e.ChecksumFile)
