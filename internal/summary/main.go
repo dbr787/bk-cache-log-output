@@ -124,13 +124,10 @@ func main() {
     for idx, e := range list {
         icon := map[string]string{"save": "💾", "restore": "🔍"}[strings.ToLower(e.Step)]
         header := fmt.Sprintf("%s Operation #%02d: %s \"%s\"", icon, idx+1, strings.Title(e.Step), e.Cache)
-        hline := strings.Repeat("─", len(header))
-        fmt.Println(hline)
-        fmt.Println(header)
-        fmt.Println(hline)
 
         detail := table.NewWriter()
         detail.SetStyle(table.StyleRounded)
+        detail.SetTitle(header)
         detail.Style().Options.SeparateColumns = false
         add := func(k, v string) {
             if v == "" {
@@ -138,7 +135,7 @@ func main() {
             }
             detail.AppendRow(table.Row{colorize(k, "94"), v})
         }
-        add("Type", strings.Title(e.Step))
+        add("Operation", strings.Title(e.Step))
         add("Registry", e.CacheRegistry)
         add("Key", e.Cache)
         stepLower := strings.ToLower(e.Step)
