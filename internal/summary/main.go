@@ -100,7 +100,6 @@ func main() {
     t.AppendHeader(colHeader)
 
     green := color.New(color.FgGreen).SprintFunc()
-    red := color.New(color.FgRed).SprintFunc()
 
     for idx, e := range list {
         icon := "💾"
