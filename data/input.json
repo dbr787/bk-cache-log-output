@@ -5,7 +5,8 @@
     "cache_hit": false,
     "size": "-",
     "transfer_speed": "-",
-    "files": 0
+    "files": 0,
+    "cache_registry": "MyCacheRegistry"
   },
   {
     "step": "Save",
@@ -13,6 +14,7 @@
     "cache_hit": true,
     "size": "25MB",
     "transfer_speed": "2.0MB/s",
-    "files": 142
+    "files": 142,
+    "cache_registry": "MyCacheRegistry"
   }
 ]

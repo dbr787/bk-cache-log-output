@@ -19,6 +19,7 @@ type Step struct {
     Size          string `json:"size"`
     TransferSpeed string `json:"transfer_speed"`
     Files         int    `json:"files"`
+    CacheRegistry string `json:"cache_registry"`
 }
 
 func main() {
@@ -59,7 +60,7 @@ func main() {
         if s.CacheHit {
             hit = green("✅")
         }
-        values := []string{s.Step, s.Duration, fmt.Sprintf("%v", s.CacheHit), s.Size, s.TransferSpeed, fmt.Sprintf("%d", s.Files), "MyCacheRegistry"}
+        values := []string{s.Step, s.Duration, fmt.Sprintf("%v", s.CacheHit), s.Size, s.TransferSpeed, fmt.Sprintf("%d", s.Files), s.CacheRegistry}
         t.AppendRow(table.Row(values...))
     }
 

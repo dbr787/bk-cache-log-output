@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 export GO111MODULE=on
-echo '+++ :buildkite: Cache Save|https://buildkite.com/docs'
+link='\033]1339;url=https://buildkite.com/docs;content=Cache Save\a'
+echo -e "+++ :buildkite: $link"
 docker run --rm -v "$PWD":/workdir -w /workdir golang:1.22-alpine \
   go run ./internal/summary --phase Save --json data/input.json 2>/dev/null
 echo '---'
