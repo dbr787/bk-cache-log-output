@@ -32,6 +32,7 @@ func any(list []Entry, fn func(Entry) bool) bool { for _, e := range list { if f
 func contains(sl []string, s string) bool { for _, v := range sl { if v == s { return true } }; return false }
 
 func main() {
+    filter := flag.String("filter", "all", "restore|save|all")
     jsonPath := flag.String("json", "", "path to json file")
     flag.Parse()
     if *jsonPath == "" {
@@ -63,6 +64,17 @@ func main() {
                 list = append(list, arr[i])
             }
         }
+    }
+
+    // apply filter
+    if strings.ToLower(*filter) == "restore" || strings.ToLower(*filter) == "save" {
+        var filtered []Entry
+        for _, e := range list {
+            if strings.ToLower(e.Step) == strings.ToLower(*filter) {
+                filtered = append(filtered, e)
+            }
+        }
+        list = filtered
     }
 
     if len(list) == 0 {
