@@ -1,4 +1,18 @@
 [
-  {"id": 1, "message": "hello"},
-  {"id": 2, "message": "world"}
+  {
+    "step": "Restore",
+    "duration": "68ms",
+    "cache_hit": false,
+    "size": "-",
+    "transfer_speed": "-",
+    "files": 0
+  },
+  {
+    "step": "Save",
+    "duration": "13.7s",
+    "cache_hit": true,
+    "size": "25MB",
+    "transfer_speed": "2.0MB/s",
+    "files": 142
+  }
 ]

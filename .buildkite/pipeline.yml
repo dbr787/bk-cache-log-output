@@ -1,6 +1,6 @@
 steps:
-  - label: ":snake: Generate log"
+  - label: ":golang: Generate cache log table"
     plugins:
       - docker#v3.9.0:
-          image: python:3.11-slim
-    command: "python scripts/generate_log.py data/input.json"
+          image: golang:1.22-alpine
+    command: "go run ./cmd/generate_log data/input.json"
