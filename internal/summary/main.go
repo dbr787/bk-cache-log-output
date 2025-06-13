@@ -255,8 +255,8 @@ func main() {
             resText = red("💨 Miss")
         }
 
-        // Header example: "♻️ 01 node [1/1] 🎯 Hit"
-        header := fmt.Sprintf("%s %02d %s %s %s", icon, idx+1, idVal, keyDisplay, resText)
+        // Header example: "♻️ 01"
+        header := fmt.Sprintf("%s %02d", icon, idx+1)
 
         detail := table.NewWriter()
         detail.SetStyle(table.StyleRounded)
