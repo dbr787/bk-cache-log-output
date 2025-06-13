@@ -40,7 +40,6 @@ func makeBorderless(w table.Writer) {
     st := table.StyleDefault
     st.Box = table.BoxStyle{}
     st.Options.DrawBorder = false
-    st.Options.SeparateColumns = false
     st.Options.SeparateRows = false
     w.SetStyle(st)
 }
@@ -217,7 +216,6 @@ func main() {
         makeBorderless(detail)
         detail.SetAllowedRowLength(summaryWidth)
         detail.SetTitle(header)
-        detail.Style().Options.SeparateColumns = false
         add := func(k, v string) {
             if v == "" {
                 return
