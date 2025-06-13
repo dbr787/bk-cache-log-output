@@ -142,8 +142,13 @@ func main() {
 
     // detail sections
     for idx, e := range list {
-        icon := map[string]string{"save": "💾", "restore": "🔍"}[strings.ToLower(e.Step)]
-        header := fmt.Sprintf("%s Operation %02d: %s \"%s\"", icon, idx+1, strings.Title(e.Step), e.Cache)
+        stepLower := strings.ToLower(e.Step)
+        keyDisplay := e.Cache
+        if e.HitKey != "" {
+            keyDisplay = e.HitKey
+        }
+        icon := map[string]string{"save": "💾", "restore": "🔍"}[stepLower]
+        header := fmt.Sprintf("%s Operation %02d: %s \"%s\"", icon, idx+1, strings.Title(e.Step), keyDisplay)
 
         detail := table.NewWriter()
         detail.SetStyle(table.StyleRounded)
@@ -172,7 +177,6 @@ func main() {
 
         add("Operation", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
         add("Registry", e.CacheRegistry)
-        stepLower := strings.ToLower(e.Step)
         var resStr string
         if stepLower == "save" {
             resStr = green("✅")
