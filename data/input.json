@@ -23,41 +23,41 @@
     "cache": "cypress-cache-v1",
     "cache_registry": "team-registry",
     "cache_hit": false,
-    "duration": "1.20s",
+    "duration": "12.8s",
     "path": ".cache/Cypress",
     "checksum_file": "cypress.lock",
     "checksum_sha": "b2c1...f8a",
-    "attempted_keys": ["cypress-cache-v1", "cypress-cache-legacy"],
+    "attempted_keys": ["cypress-cache-v1", "cypress-cache-v2", "cypress-cache-legacy"],
     "hit_key": "cypress-cache-legacy",
     "started_at": "2025-06-13T08:33:10.861Z",
-    "completed_at": "2025-06-13T08:33:12.060Z"
+    "completed_at": "2025-06-13T08:33:19.261Z"
   },
   {
     "step": "save",
     "cache": "npm-cache-v1",
     "cache_registry": "team-registry",
-    "duration": "1.53s",
+    "duration": "10.2s",
     "path": "./node_modules",
-    "bytes_written": "10.4MB",
-    "bytes_transferred": "26MB",
-    "compression_ratio": "2.5x",
+    "bytes_written": "150MB",
+    "bytes_transferred": "400MB",
+    "compression_ratio": "2.7x",
     "compression_format": "zstd",
-    "transfer_speed": "12.0MB/s",
+    "transfer_speed": "40.0MB/s",
     "started_at": "2025-06-13T08:33:12.061Z",
-    "completed_at": "2025-06-13T08:33:13.591Z"
+    "completed_at": "2025-06-13T08:33:22.261Z"
   },
   {
     "step": "save",
     "cache": "cypress-cache-v1",
     "cache_registry": "team-registry",
-    "duration": "1.10s",
+    "duration": "6.7s",
     "path": ".cache/Cypress",
-    "bytes_written": "3.0MB",
-    "bytes_transferred": "3.0MB",
-    "compression_ratio": "1.0x",
+    "bytes_written": "45MB",
+    "bytes_transferred": "130MB",
+    "compression_ratio": "2.9x",
     "compression_format": "gzip",
-    "transfer_speed": "2.8MB/s",
+    "transfer_speed": "19.4MB/s",
     "started_at": "2025-06-13T08:33:13.592Z",
-    "completed_at": "2025-06-13T08:33:14.692Z"
+    "completed_at": "2025-06-13T08:33:20.292Z"
   }
 ]
