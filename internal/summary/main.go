@@ -102,12 +102,10 @@ func main() {
     green := color.New(color.FgGreen).SprintFunc()
 
     for idx, e := range list {
-        icon := "💾"
-        if strings.ToLower(e.Step) == "restore" {
-            icon = "♻️"
-        }
+        stepLower := strings.ToLower(e.Step)
+        icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
         result := "❌"
-        if strings.ToLower(e.Step) == "save" {
+        if stepLower == "save" {
             result = green("✔ success")
         } else if e.CacheHit {
             result = green("✅")
@@ -116,7 +114,7 @@ func main() {
         if size == "" {
             size = e.BytesTransferred
         }
-        row := table.Row{idx + 1, icon, e.CacheRegistry, e.Cache, result, e.Duration, size}
+        row := table.Row{fmt.Sprintf("%02d", idx+1), icon, e.CacheRegistry, e.Cache, result, e.Duration, size}
         t.AppendRow(row)
     }
     fmt.Println(t.Render())
@@ -124,10 +122,7 @@ func main() {
     // detail sections
     for idx, e := range list {
         sep := strings.Repeat("━", 70)
-        icon := "💾"
-        if strings.ToLower(e.Step) == "restore" {
-            icon = "🔍"
-        }
+        icon := map[string]string{"save": "💾", "restore": "🔍"}[strings.ToLower(e.Step)]
         fmt.Println(sep)
         fmt.Printf("%s Operation #%d: %s \"%s\"\n", icon, idx+1, strings.Title(e.Step), e.Cache)
         fmt.Println(sep)
