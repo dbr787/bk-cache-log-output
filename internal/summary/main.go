@@ -13,6 +13,10 @@ import (
     "github.com/jedib0t/go-pretty/v6/text"
 )
 
+func colorize(s string, code string) string {
+    return fmt.Sprintf("\033[%sm%s\033[0m", code, s)
+}
+
 type Step struct {
     Step          string `json:"step"`
     Duration      string `json:"duration"`
@@ -49,10 +53,6 @@ func main() {
 
     green := color.New(color.FgGreen).SprintFunc()
     red := color.New(color.FgRed).SprintFunc()
-
-    func colorize(s string, code string) string {
-        return fmt.Sprintf("\033[%sm%s\033[0m", code, s)
-    }
 
     for _, s := range steps {
         t := table.NewWriter()
