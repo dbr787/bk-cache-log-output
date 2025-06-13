@@ -14,7 +14,9 @@
     "compression_ratio": "2.5x",
     "transfer_speed": "11.3MB/s",
     "started_at": "2025-06-13T08:33:10.010Z",
-    "completed_at": "2025-06-13T08:33:10.860Z"
+    "completed_at": "2025-06-13T08:33:10.860Z",
+    "attempted_keys": ["npm-cache-v1"],
+    "hit_key": "npm-cache-v1"
   },
   {
     "step": "restore",
@@ -25,6 +27,8 @@
     "path": ".cache/Cypress",
     "checksum_file": "cypress.lock",
     "checksum_sha": "b2c1...f8a",
+    "attempted_keys": ["cypress-cache-v1", "cypress-cache-legacy"],
+    "hit_key": "cypress-cache-legacy",
     "started_at": "2025-06-13T08:33:10.861Z",
     "completed_at": "2025-06-13T08:33:12.060Z"
   },
