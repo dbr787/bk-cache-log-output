@@ -24,6 +24,12 @@ type Entry struct {
     BytesWritten     string `json:"bytes_written"`
     CompressionRatio string `json:"compression_ratio"`
     CacheRegistry    string `json:"cache_registry"`
+    Path             string `json:"path"`
+    ChecksumFile     string `json:"checksum_file"`
+    ChecksumSHA      string `json:"checksum_sha"`
+    CompressionFormat string `json:"compression_format"`
+    StartedAt        string `json:"started_at"`
+    CompletedAt      string `json:"completed_at"`
 }
 
 func colorize(s, code string) string { return fmt.Sprintf("\033[%sm%s\033[0m", code, s) }
@@ -82,13 +88,8 @@ func main() {
         return
     }
 
-    headers := []string{"OP", "REGISTRY", "CACHE", "HIT", "DURATION"}
-    if any(list, func(e Entry) bool { return e.Dirs != 0 }) { headers = append(headers, "DIRS") }
-    if any(list, func(e Entry) bool { return e.Files != 0 }) { headers = append(headers, "FILES") }
-    if any(list, func(e Entry) bool { return e.BytesWritten != "" }) { headers = append(headers, "SIZE") }
-    if any(list, func(e Entry) bool { return e.CompressionRatio != "" }) { headers = append(headers, "COMP") }
-    if any(list, func(e Entry) bool { return e.BytesTransferred != "" }) { headers = append(headers, "XFER") }
-    if any(list, func(e Entry) bool { return e.TransferSpeed != "" }) { headers = append(headers, "SPEED") }
+    headers := []string{"#", "OP", "REGISTRY", "KEY", "RESULT", "TIME", "SIZE"}
+    // summary table limited columns only
 
     t := table.NewWriter()
     t.SetStyle(table.StyleRounded)
@@ -101,24 +102,62 @@ func main() {
     green := color.New(color.FgGreen).SprintFunc()
     red := color.New(color.FgRed).SprintFunc()
 
-    for _, e := range list {
-        icon := "💾" // save default
+    for idx, e := range list {
+        icon := "💾"
         if strings.ToLower(e.Step) == "restore" {
             icon = "♻️"
         }
-        row := table.Row{icon, e.CacheRegistry, e.Cache}
-        hit := red("❌")
-        if e.CacheHit {
-            hit = green("✅")
+        result := "❌"
+        if strings.ToLower(e.Step) == "save" {
+            result = green("✔ success")
+        } else if e.CacheHit {
+            result = green("✅")
         }
-        row = append(row, hit, e.Duration)
-        if contains(headers, "DIRS") { row = append(row, e.Dirs) }
-        if contains(headers, "FILES") { row = append(row, e.Files) }
-        if contains(headers, "SIZE") { row = append(row, e.BytesWritten) }
-        if contains(headers, "COMP") { row = append(row, e.CompressionRatio) }
-        if contains(headers, "XFER") { row = append(row, e.BytesTransferred) }
-        if contains(headers, "SPEED") { row = append(row, e.TransferSpeed) }
+        size := e.BytesWritten
+        if size == "" {
+            size = e.BytesTransferred
+        }
+        row := table.Row{idx + 1, icon, e.CacheRegistry, e.Cache, result, e.Duration, size}
         t.AppendRow(row)
     }
     fmt.Println(t.Render())
+
+    // detail sections
+    for idx, e := range list {
+        sep := strings.Repeat("━", 70)
+        icon := "💾"
+        if strings.ToLower(e.Step) == "restore" {
+            icon = "🔍"
+        }
+        fmt.Println(sep)
+        fmt.Printf("%s Operation #%d: %s \"%s\"\n", icon, idx+1, strings.Title(e.Step), e.Cache)
+        fmt.Println(sep)
+
+        kv := func(k, v string) {
+            if v == "" || v == "0" {
+                return
+            }
+            fmt.Printf("  %-18s %s\n", k+":", v)
+        }
+        kv("Type", strings.Title(e.Step))
+        kv("Registry", e.CacheRegistry)
+        kv("Key", e.Cache)
+        if strings.ToLower(e.Step) == "restore" {
+            kv("Cache Hit", fmt.Sprintf("%v", e.CacheHit))
+        } else {
+            kv("Cache Status", "success")
+        }
+        kv("Path", e.Path)
+        kv("Checksum File", e.ChecksumFile)
+        kv("Checksum SHA", e.ChecksumSHA)
+        kv("Compression Format", e.CompressionFormat)
+        kv("Compressed Size", e.BytesWritten)
+        kv("Uncompressed Size", e.BytesTransferred)
+        kv("Compression Ratio", e.CompressionRatio)
+        kv("Transfer Speed", e.TransferSpeed)
+        kv("Duration", e.Duration)
+        kv("Started At", e.StartedAt)
+        kv("Completed At", e.CompletedAt)
+        fmt.Println()
+    }
 }
