@@ -1,22 +1,27 @@
-[
-  {
-    "step": "Restore",
-    "duration": "68ms",
-    "cache_hit": false,
-    "size": "-",
-    "transfer_speed": "-",
-    "files": 0,
-    "dirs": 0,
-    "cache_registry": "MyCacheRegistry"
-  },
-  {
-    "step": "Save",
-    "duration": "13.7s",
-    "cache_hit": true,
-    "size": "25MB",
-    "transfer_speed": "2.0MB/s",
-    "files": 142,
-    "dirs": 10,
-    "cache_registry": "MyCacheRegistry"
-  }
-]
+{
+  "restore": [
+    {
+      "cache": "MyCacheRegistry",
+      "cache_hit": false,
+      "duration": "68ms",
+      "dirs": 0,
+      "files": 0,
+      "bytes_transferred": "-",
+      "transfer_speed": "-",
+      "cache_registry": "MyCacheRegistry"
+    }
+  ],
+  "save": [
+    {
+      "cache": "MyCacheRegistry",
+      "duration": "13.7s",
+      "dirs": 10,
+      "files": 142,
+      "bytes_written": "25MB",
+      "compression_ratio": "-",
+      "bytes_transferred": "25MB",
+      "transfer_speed": "2.0MB/s",
+      "cache_registry": "MyCacheRegistry"
+    }
+  ]
+}
