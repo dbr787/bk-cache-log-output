@@ -36,9 +36,9 @@ type Entry struct {
 
 func colorize(s, code string) string { return fmt.Sprintf("\033[%sm%s\033[0m", code, s) }
 
-func makeBorderless(w *table.Writer) {
+func makeBorderless(w table.Writer) {
     st := table.StyleDefault
-    st.Box = table.Box{}
+    st.Box = table.BoxStyle{}
     st.Options.DrawBorder = false
     st.Options.SeparateColumns = false
     st.Options.SeparateRows = false
