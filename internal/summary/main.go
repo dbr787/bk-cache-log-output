@@ -19,12 +19,12 @@ type Entry struct {
     Duration         string   `json:"duration"`
     Dirs             int      `json:"dirs"`
     Files            int      `json:"files"`
-    BytesTransferred string   `json:"bytes_transferred"`
+    UncompressedSize string   `json:"uncompressed_size"`
     TransferSpeed    string   `json:"transfer_speed"`
-    BytesWritten     string   `json:"bytes_written"`
+    CompressedSize   string   `json:"compressed_size"`
     CompressionRatio string   `json:"compression_ratio"`
-    CacheRegistry    string   `json:"cache_registry"`
-    Path             string   `json:"path"`
+    Registry         string   `json:"registry"`
+    Paths            string   `json:"paths"`
     ChecksumFile     string   `json:"checksum_file"`
     ChecksumSHA      string   `json:"checksum_sha"`
     CompressionFormat string   `json:"compression_format"`
@@ -125,7 +125,7 @@ func main() {
     // summary table limited columns only
 
     deriveID := func(e Entry) string {
-        p := strings.ToLower(e.Path)
+        p := strings.ToLower(e.Paths)
         if strings.Contains(p, "node_modules") || strings.Contains(strings.ToLower(e.Cache), "npm") {
             return "node"
         }
@@ -212,16 +212,16 @@ func main() {
         speedVal := "-"
         if stepLower == "save" {
             if at.Pos == 1 {
-                size = e.BytesWritten
-                compVal = e.BytesWritten
+                size = e.CompressedSize
+                compVal = e.CompressedSize
                 ratioVal = e.CompressionRatio
                 speedVal = e.TransferSpeed
             }
-        } else { // restore
+        } else { // restore rows use uncompressed size
             if at.Key == e.HitKey && at.Key != "" {
-                size = e.BytesTransferred
-                // For restore hit, compressed size is size (bytes transferred)
-                compVal = e.BytesTransferred
+                size = e.UncompressedSize
+                compVal = e.CompressedSize
+                ratioVal = e.CompressionRatio
                 speedVal = e.TransferSpeed
             }
         }
@@ -292,13 +292,13 @@ func main() {
         // Result row with Hit/Miss/Saved wording (pre-computed above)
         add("Result", resText)
 
-        add("Registry", e.CacheRegistry)
-        add("Paths", e.Path)
+        add("Registry", e.Registry)
+        add("Paths", e.Paths)
         add("Checksum File", e.ChecksumFile)
         add("Checksum SHA", e.ChecksumSHA)
         add("Compression Format", e.CompressionFormat)
-        add("Compressed Size", e.BytesWritten)
-        add("Uncompressed Size", e.BytesTransferred)
+        add("Compressed Size", e.CompressedSize)
+        add("Uncompressed Size", e.UncompressedSize)
         add("Compression Ratio", e.CompressionRatio)
         add("Transfer Speed", e.TransferSpeed)
         add("Duration", e.Duration)

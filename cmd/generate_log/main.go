@@ -9,12 +9,12 @@ import (
 )
 
 type Step struct {
-    Action        string `json:"action"`
-    Duration      string `json:"duration"`
-    CacheHit      bool   `json:"cache_hit"`
-    Size          string `json:"size"`
-    TransferSpeed string `json:"transfer_speed"`
-    Files         int    `json:"files"`
+    Action           string `json:"action"`
+    Duration         string `json:"duration"`
+    CacheHit         bool   `json:"cache_hit"`
+    UncompressedSize string `json:"uncompressed_size"`
+    TransferSpeed    string `json:"transfer_speed"`
+    Files            int    `json:"files"`
 }
 
 func pad(s string, n int) string {
@@ -51,14 +51,14 @@ func main() {
         log.Fatalf("unmarshal: %v", err)
     }
 
-    headers := []string{"ACTION", "DURATION", "CACHE HIT", "SIZE", "TRANSFER SPEED", "FILES"}
+    headers := []string{"ACTION", "DURATION", "CACHE HIT", "UNCOMPRESSED SIZE", "TRANSFER SPEED", "FILES"}
     // compute widths
     widths := make([]int, len(headers))
     for i, h := range headers {
         widths[i] = len(h)
     }
     for _, s := range steps {
-        values := []string{s.Action, s.Duration, fmt.Sprintf("%v", s.CacheHit), s.Size, s.TransferSpeed, fmt.Sprintf("%d", s.Files)}
+        values := []string{s.Action, s.Duration, fmt.Sprintf("%v", s.CacheHit), s.UncompressedSize, s.TransferSpeed, fmt.Sprintf("%d", s.Files)}
         for i, v := range values {
             if len(v) > widths[i] {
                 widths[i] = len(v)
@@ -87,7 +87,7 @@ func main() {
     fmt.Println(border("├", "┼", "┤", padded))
 
     for idx, s := range steps {
-        values := []string{s.Action, s.Duration, fmt.Sprintf("%v", s.CacheHit), s.Size, s.TransferSpeed, fmt.Sprintf("%d", s.Files)}
+        values := []string{s.Action, s.Duration, fmt.Sprintf("%v", s.CacheHit), s.UncompressedSize, s.TransferSpeed, fmt.Sprintf("%d", s.Files)}
         var row strings.Builder
         row.WriteString("│ ")
         for i, v := range values {
