@@ -134,7 +134,7 @@ func main() {
         }
 
         // determine result string
-        result := red("❌")
+        result := red("💨")
         if stepLower == "save" {
             result = green("✅")
         } else {
@@ -148,8 +148,7 @@ func main() {
             size = e.BytesTransferred
         }
 
-        icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
-        opVal := fmt.Sprintf("%s %02d", icon, idx+1)
+        opVal := fmt.Sprintf("%02d", idx+1)
 
         row := table.Row{opVal, e.CacheRegistry, keyDisplay, result, e.Duration, size}
         t.AppendRow(row)
@@ -186,29 +185,24 @@ func main() {
         if at.Total > 1 {
             add("Attempt", fmt.Sprintf("%d of %d", at.Pos, at.Total))
         }
-        if stepLower == "restore" {
-            if at.Key == e.HitKey && at.Key != "" {
-                add("Outcome", green("✅"))
-            } else {
-                add("Outcome", red("❌"))
-            }
+
+        // Result row with Hit/Miss/Saved wording
+        var resWord string
+        var resColor string
+        if stepLower == "save" {
+            resWord = "Saved"
+            resColor = "92" // green
+        } else if at.Key == e.HitKey && at.Key != "" {
+            resWord = "Hit"
+            resColor = "92"
+        } else {
+            resWord = "Miss"
+            resColor = "91" // red
         }
+        add("Result", colorize(resWord, resColor))
 
         add("Operation", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
         add("Registry", e.CacheRegistry)
-        var resStr string
-        if stepLower == "save" {
-            resStr = green("✅")
-        } else if at.Key == e.HitKey && at.Key != "" {
-            resStr = green("✅")
-        } else {
-            resStr = red("❌")
-        }
-        if stepLower == "restore" {
-            add("Cache Hit", resStr)
-        } else {
-            add("Cache Status", resStr)
-        }
         add("Path", e.Path)
         add("Checksum File", e.ChecksumFile)
         add("Checksum SHA", e.ChecksumSHA)
