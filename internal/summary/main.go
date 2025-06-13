@@ -118,15 +118,18 @@ func main() {
         row := table.Row{fmt.Sprintf("%02d", idx+1), icon, e.CacheRegistry, e.Cache, result, e.Duration, size}
         t.AppendRow(row)
     }
-    fmt.Println(t.Render())
+    summaryStr := t.Render()
+    fmt.Println(summaryStr)
+    summaryWidth := len(strings.Split(summaryStr, "\n")[0])
 
     // detail sections
     for idx, e := range list {
         icon := map[string]string{"save": "💾", "restore": "🔍"}[strings.ToLower(e.Step)]
-        header := fmt.Sprintf("%s Operation #%02d: %s \"%s\"", icon, idx+1, strings.Title(e.Step), e.Cache)
+        header := fmt.Sprintf("%s Operation %02d: %s \"%s\"", icon, idx+1, strings.Title(e.Step), e.Cache)
 
         detail := table.NewWriter()
         detail.SetStyle(table.StyleRounded)
+        detail.SetAllowedRowLength(summaryWidth)
         detail.SetTitle(header)
         detail.Style().Options.SeparateColumns = false
         add := func(k, v string) {
@@ -135,7 +138,7 @@ func main() {
             }
             detail.AppendRow(table.Row{colorize(k, "94"), v})
         }
-        add("Operation", strings.Title(e.Step))
+        add("Operation", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
         add("Registry", e.CacheRegistry)
         add("Key", e.Cache)
         stepLower := strings.ToLower(e.Step)
