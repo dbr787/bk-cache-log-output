@@ -39,12 +39,13 @@ func colorize(s, code string) string { return fmt.Sprintf("\033[%sm%s\033[0m", c
 func makeBorderless(w table.Writer) {
     st := table.StyleDefault
     st.Box = table.BoxStyle{
-        PaddingLeft:  " ",
-        PaddingRight: " ",
+        PaddingLeft:  "",
+        PaddingRight: " ", // right pad 1 space
     }
-    st.Box.MiddleVertical = " "
+    st.Box.MiddleVertical = " " // 1 space between columns
     st.Options.DrawBorder = false
     st.Options.SeparateRows = false
+    st.Options.SeparateHeader = false // no blank line after header
     w.SetStyle(st)
 }
 
@@ -146,7 +147,7 @@ func main() {
     }
 
     t := table.NewWriter()
-    makeBorderless(t)
+    t.SetStyle(table.StyleRounded)
     colHeader := make(table.Row, len(headers))
     for i, h := range headers {
         colHeader[i] = colorize(h, "4;94")
@@ -217,7 +218,7 @@ func main() {
         header := fmt.Sprintf("%s Operation %02d: %s %s %s", icon, idx+1, strings.Title(e.Step), idVal, keyDisplay)
 
         detail := table.NewWriter()
-        makeBorderless(detail)
+        detail.SetStyle(table.StyleRounded)
         detail.SetAllowedRowLength(summaryWidth)
         detail.SetTitle(header)
         add := func(k, v string) {
