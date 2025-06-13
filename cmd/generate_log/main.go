@@ -66,7 +66,12 @@ func main() {
         }
     }
 
-    fmt.Println(border("╭", "┬", "╮", widths))
+    padded := make([]int, len(widths))
+    for i, w := range widths {
+        padded[i] = w + 2 // account for spaces around content
+    }
+
+    fmt.Println(border("╭", "┬", "╮", padded))
     // header row
     var headerRow strings.Builder
     headerRow.WriteString("│ ")
@@ -79,7 +84,7 @@ func main() {
         }
     }
     fmt.Println(headerRow.String())
-    fmt.Println(border("├", "┼", "┤", widths))
+    fmt.Println(border("├", "┼", "┤", padded))
 
     for idx, s := range steps {
         values := []string{s.Step, s.Duration, fmt.Sprintf("%v", s.CacheHit), s.Size, s.TransferSpeed, fmt.Sprintf("%d", s.Files)}
@@ -95,7 +100,7 @@ func main() {
         }
         fmt.Println(row.String())
         if idx == len(steps)-1 {
-            fmt.Println(border("╰", "┴", "╯", widths))
+            fmt.Println(border("╰", "┴", "╯", padded))
         }
     }
 }
