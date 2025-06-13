@@ -106,7 +106,6 @@ func main() {
 
     for idx, e := range list {
         stepLower := strings.ToLower(e.Step)
-        icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
 
         // determine key to display
         keyDisplay := e.Cache
