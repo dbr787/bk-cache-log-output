@@ -148,8 +148,7 @@ func main() {
 
     t := table.NewWriter()
     t.SetStyle(table.StyleRounded)
-    // remove border/underline for header
-    makeBorderless(t)
+    // use default rounded borders
     colHeader := make(table.Row, len(headers))
     for i, h := range headers {
         colHeader[i] = colorize(h, "4;94")
