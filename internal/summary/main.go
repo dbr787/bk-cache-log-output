@@ -32,7 +32,6 @@ type Step struct {
 }
 
 func main() {
-    phase := flag.String("phase", "", "restore|save|other label")
     jsonPath := flag.String("json", "", "path to json file")
     flag.Parse()
 
@@ -57,7 +56,6 @@ func main() {
     for _, s := range steps {
         t := table.NewWriter()
         t.SetStyle(table.StyleRounded)
-        t.Style().Title.Align = text.AlignCenter
 
         rows := []table.Row{{"Operation", s.Step}}
         // Common fields
