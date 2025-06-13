@@ -23,14 +23,18 @@
     "cache": "cypress-cache-v1",
     "cache_registry": "team-registry",
     "cache_hit": false,
-    "duration": "0.18s",
+    "duration": "12.8s",
     "path": ".cache/Cypress",
     "checksum_file": "cypress.lock",
     "checksum_sha": "b2c1...f8a",
     "attempted_keys": ["cypress-cache-v1", "cypress-cache-v2", "cypress-cache-legacy"],
     "hit_key": "cypress-cache-legacy",
+    "bytes_transferred": "130MB",
+    "transfer_speed": "10.2MB/s",
+    "compression_ratio": "2.9x",
+    "compression_format": "gzip",
     "started_at": "2025-06-13T08:33:10.861Z",
-    "completed_at": "2025-06-13T08:33:11.041Z"
+    "completed_at": "2025-06-13T08:33:23.661Z"
   },
   {
     "step": "save",
