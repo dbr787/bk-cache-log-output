@@ -192,8 +192,16 @@ func main() {
             add("Attempt", fmt.Sprintf("%d of %d", at.Pos, at.Total))
         }
 
-        // Result row with Hit/Miss/Saved wording
-        add("Result", result)
+        // Result row with Hit/Miss/Saved wording (recompute for scope)
+        var resText string
+        if stepLower == "save" {
+            resText = green("Saved")
+        } else if at.Key == e.HitKey && at.Key != "" {
+            resText = green("🎯 Hit")
+        } else {
+            resText = red("💨 Miss")
+        }
+        add("Result", resText)
 
         add("Operation", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
         add("Registry", e.CacheRegistry)
