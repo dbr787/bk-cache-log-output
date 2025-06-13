@@ -2,5 +2,6 @@
 set -euo pipefail
 link='\033]1339;url=https://buildkite.com/docs;content=Cache Restore\a'
 echo -e "+++ :buildkite: $link"
+docker pull -q golang:1.22-alpine >/dev/null 2>&1 || true
 docker run --rm -v "$PWD":/workdir -w /workdir golang:1.22-alpine \
-  go run ./internal/summary --phase Restore --json data/input.json || true
+  go run ./internal/summary --phase Restore --json data/input.json 2>/dev/null || true
