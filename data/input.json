@@ -1,27 +1,59 @@
-{
-  "restore": [
-    {
-      "cache": "MyCacheRegistry",
-      "cache_hit": false,
-      "duration": "68ms",
-      "dirs": 0,
-      "files": 0,
-      "bytes_transferred": "-",
-      "transfer_speed": "-",
-      "cache_registry": "MyCacheRegistry"
-    }
-  ],
-  "save": [
-    {
-      "cache": "MyCacheRegistry",
-      "duration": "13.7s",
-      "dirs": 10,
-      "files": 142,
-      "bytes_written": "25MB",
-      "compression_ratio": "-",
-      "bytes_transferred": "25MB",
-      "transfer_speed": "2.0MB/s",
-      "cache_registry": "MyCacheRegistry"
-    }
-  ]
-}
+[
+  {
+    "step": "restore",
+    "cache": "npm-cache-v1",
+    "cache_registry": "team-registry",
+    "cache_hit": true,
+    "duration": "850ms",
+    "path": "./node_modules",
+    "checksum_file": "package-lock.json",
+    "checksum_sha": "7f3a...d1c",
+    "compression_format": "zstd",
+    "bytes_written": "9.6MB",
+    "bytes_transferred": "24MB",
+    "compression_ratio": "2.5x",
+    "transfer_speed": "11.3MB/s",
+    "started_at": "2025-06-13T08:33:10.010Z",
+    "completed_at": "2025-06-13T08:33:10.860Z"
+  },
+  {
+    "step": "restore",
+    "cache": "cypress-cache-v1",
+    "cache_registry": "team-registry",
+    "cache_hit": false,
+    "duration": "1.20s",
+    "path": ".cache/Cypress",
+    "checksum_file": "cypress.lock",
+    "checksum_sha": "b2c1...f8a",
+    "started_at": "2025-06-13T08:33:10.861Z",
+    "completed_at": "2025-06-13T08:33:12.060Z"
+  },
+  {
+    "step": "save",
+    "cache": "npm-cache-v1",
+    "cache_registry": "team-registry",
+    "duration": "1.53s",
+    "path": "./node_modules",
+    "bytes_written": "10.4MB",
+    "bytes_transferred": "26MB",
+    "compression_ratio": "2.5x",
+    "compression_format": "zstd",
+    "transfer_speed": "12.0MB/s",
+    "started_at": "2025-06-13T08:33:12.061Z",
+    "completed_at": "2025-06-13T08:33:13.591Z"
+  },
+  {
+    "step": "save",
+    "cache": "cypress-cache-v1",
+    "cache_registry": "team-registry",
+    "duration": "1.10s",
+    "path": ".cache/Cypress",
+    "bytes_written": "3.0MB",
+    "bytes_transferred": "3.0MB",
+    "compression_ratio": "1.0x",
+    "compression_format": "gzip",
+    "transfer_speed": "2.8MB/s",
+    "started_at": "2025-06-13T08:33:13.592Z",
+    "completed_at": "2025-06-13T08:33:14.692Z"
+  }
+]
