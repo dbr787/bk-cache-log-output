@@ -142,12 +142,13 @@ func main() {
         keyDisplay := fmt.Sprintf("[%d/%d]", at.Pos, at.Total)
 
         // determine result string
+        var result string
         if stepLower == "save" {
-            result := green("Saved")
+            result = green("Saved")
         } else if at.Key == e.HitKey && at.Key != "" {
-            result := green("🎯 Hit")
+            result = green("🎯 Hit")
         } else {
-            result := red("💨 Miss")
+            result = red("💨 Miss")
         }
 
         size := e.BytesWritten
@@ -192,19 +193,11 @@ func main() {
         }
 
         // Result row with Hit/Miss/Saved wording
-        var resText string
-        if stepLower == "save" {
-            resText = green("Saved")
-        } else if at.Key == e.HitKey && at.Key != "" {
-            resText = green("🎯 Hit")
-        } else {
-            resText = red("💨 Miss")
-        }
-        add("Result", resText)
+        add("Result", result)
 
         add("Operation", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
         add("Registry", e.CacheRegistry)
-        add("Path", e.Path)
+        add("Paths", e.Path)
         add("Checksum File", e.ChecksumFile)
         add("Checksum SHA", e.ChecksumSHA)
         add("Compression Format", e.CompressionFormat)
