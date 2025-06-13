@@ -142,10 +142,18 @@ func main() {
         add("Registry", e.CacheRegistry)
         add("Key", e.Cache)
         stepLower := strings.ToLower(e.Step)
-        if stepLower == "restore" {
-            add("Cache Hit", result)
+        var resStr string
+        if stepLower == "save" {
+            resStr = green("✅")
+        } else if e.CacheHit {
+            resStr = green("✅")
         } else {
-            add("Cache Status", result)
+            resStr = red("❌")
+        }
+        if stepLower == "restore" {
+            add("Cache Hit", resStr)
+        } else {
+            add("Cache Status", resStr)
         }
         add("Path", e.Path)
         add("Checksum File", e.ChecksumFile)
