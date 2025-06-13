@@ -13,23 +13,25 @@ import (
 )
 
 type Entry struct {
-    Step             string `json:"step"` // restore or save
-    Cache            string `json:"cache"`
-    CacheHit         bool   `json:"cache_hit"`
-    Duration         string `json:"duration"`
-    Dirs             int    `json:"dirs"`
-    Files            int    `json:"files"`
-    BytesTransferred string `json:"bytes_transferred"`
-    TransferSpeed    string `json:"transfer_speed"`
-    BytesWritten     string `json:"bytes_written"`
-    CompressionRatio string `json:"compression_ratio"`
-    CacheRegistry    string `json:"cache_registry"`
-    Path             string `json:"path"`
-    ChecksumFile     string `json:"checksum_file"`
-    ChecksumSHA      string `json:"checksum_sha"`
-    CompressionFormat string `json:"compression_format"`
-    StartedAt        string `json:"started_at"`
-    CompletedAt      string `json:"completed_at"`
+    Step             string   `json:"step"` // restore or save
+    Cache            string   `json:"cache"`
+    CacheHit         bool     `json:"cache_hit"`
+    Duration         string   `json:"duration"`
+    Dirs             int      `json:"dirs"`
+    Files            int      `json:"files"`
+    BytesTransferred string   `json:"bytes_transferred"`
+    TransferSpeed    string   `json:"transfer_speed"`
+    BytesWritten     string   `json:"bytes_written"`
+    CompressionRatio string   `json:"compression_ratio"`
+    CacheRegistry    string   `json:"cache_registry"`
+    Path             string   `json:"path"`
+    ChecksumFile     string   `json:"checksum_file"`
+    ChecksumSHA      string   `json:"checksum_sha"`
+    CompressionFormat string   `json:"compression_format"`
+    StartedAt        string   `json:"started_at"`
+    CompletedAt      string   `json:"completed_at"`
+    AttemptedKeys    []string `json:"attempted_keys"`
+    HitKey           string   `json:"hit_key"`
 }
 
 func colorize(s, code string) string { return fmt.Sprintf("\033[%sm%s\033[0m", code, s) }
@@ -105,17 +107,33 @@ func main() {
     for idx, e := range list {
         stepLower := strings.ToLower(e.Step)
         icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
+
+        // determine key to display
+        keyDisplay := e.Cache
+        if e.HitKey != "" {
+            keyDisplay = e.HitKey
+        }
+
+        // determine result string
         result := red("❌")
         if stepLower == "save" {
             result = green("✅")
-        } else if e.CacheHit {
-            result = green("✅")
+        } else {
+            if e.HitKey != "" {
+                if len(e.AttemptedKeys) > 0 && e.AttemptedKeys[0] != e.HitKey {
+                    result = red("❌") + "➜" + green("✅")
+                } else {
+                    result = green("✅")
+                }
+            }
         }
+
         size := e.BytesWritten
         if size == "" {
             size = e.BytesTransferred
         }
-        row := table.Row{fmt.Sprintf("%02d", idx+1), icon, e.CacheRegistry, e.Cache, result, e.Duration, size}
+
+        row := table.Row{fmt.Sprintf("%02d", idx+1), icon, e.CacheRegistry, keyDisplay, result, e.Duration, size}
         t.AppendRow(row)
     }
     summaryStr := t.Render()
@@ -138,14 +156,27 @@ func main() {
             }
             detail.AppendRow(table.Row{colorize(k, "94"), v})
         }
+
+        // show attempted keys and hit key
+        add("Key", keyDisplay)
+        if len(e.AttemptedKeys) > 0 {
+            add("Attempted Keys", strings.Join(e.AttemptedKeys, ", "))
+        }
+        if stepLower == "restore" {
+            if e.HitKey != "" {
+                add("Hit Key", fmt.Sprintf("%s %s", e.HitKey, green("✅")))
+            } else {
+                add("Hit Key", red("❌"))
+            }
+        }
+
         add("Operation", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
         add("Registry", e.CacheRegistry)
-        add("Key", e.Cache)
         stepLower := strings.ToLower(e.Step)
         var resStr string
         if stepLower == "save" {
             resStr = green("✅")
-        } else if e.CacheHit {
+        } else if e.HitKey != "" {
             resStr = green("✅")
         } else {
             resStr = red("❌")
@@ -167,6 +198,14 @@ func main() {
         add("Started At", e.StartedAt)
         add("Completed At", e.CompletedAt)
 
-        fmt.Println(detail.Render())
+        // pad each line to match summary width
+        detailStr := detail.Render()
+        dl := strings.Split(detailStr, "\n")
+        for i, line := range dl {
+            if len(line) < summaryWidth {
+                dl[i] = line + strings.Repeat(" ", summaryWidth-len(line))
+            }
+        }
+        fmt.Println(strings.Join(dl, "\n"))
     }
 }
