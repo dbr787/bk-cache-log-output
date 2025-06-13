@@ -113,7 +113,7 @@ func main() {
         return
     }
 
-    headers := []string{"#", "ID", "KEY", "RESULT", "TIME", "SIZE"}
+    headers := []string{"♻️", "ID", "KEY", "RESULT", "TIME", "SIZE"}
     // summary table limited columns only
 
     deriveID := func(e Entry) string {
@@ -215,7 +215,19 @@ func main() {
         keyDisplay := fmt.Sprintf("[%d/%d]", at.Pos, at.Total)
         icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
         idVal := deriveID(*e)
-        header := fmt.Sprintf("%s Operation %02d: %s %s %s", icon, idx+1, strings.Title(e.Step), idVal, keyDisplay)
+
+        // Determine result text once for header and detail table
+        var resText string
+        if stepLower == "save" {
+            resText = green("Saved")
+        } else if at.Key == e.HitKey && at.Key != "" {
+            resText = green("🎯 Hit")
+        } else {
+            resText = red("💨 Miss")
+        }
+
+        // Header example: "♻️ 01: Restore node [1/1] 🎯 Hit"
+        header := fmt.Sprintf("%s %02d: %s %s %s %s", icon, idx+1, strings.Title(e.Step), idVal, keyDisplay, resText)
 
         detail := table.NewWriter()
         detail.SetStyle(table.StyleRounded)
@@ -234,15 +246,7 @@ func main() {
         add("ID", idVal)
         add("Key", keyDisplay)
 
-        // Result row with Hit/Miss/Saved wording (recompute for scope)
-        var resText string
-        if stepLower == "save" {
-            resText = green("Saved")
-        } else if at.Key == e.HitKey && at.Key != "" {
-            resText = green("🎯 Hit")
-        } else {
-            resText = red("💨 Miss")
-        }
+        // Result row with Hit/Miss/Saved wording (pre-computed above)
         add("Result", resText)
 
         add("Registry", e.CacheRegistry)
