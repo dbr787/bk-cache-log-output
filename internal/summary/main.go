@@ -149,6 +149,10 @@ func main() {
         if len(keys) == 0 {
             keys = []string{e.Cache}
         }
+        // For save steps, only include the primary key (first) to avoid multiple rows per save
+        if strings.ToLower(e.Step) == "save" && len(keys) > 0 {
+            keys = keys[:1]
+        }
         for i, k := range keys {
             attempts = append(attempts, attempt{Entry: &e, Key: k, Pos: i + 1, Total: len(keys)})
         }
