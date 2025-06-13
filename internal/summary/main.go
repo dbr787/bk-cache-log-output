@@ -150,15 +150,27 @@ func main() {
         if len(keys) == 0 {
             keys = []string{e.Cache}
         }
-        // For save steps, only include the primary key (first) to avoid multiple rows per save
-        if strings.ToLower(e.Step) == "save" && len(keys) > 0 {
+
+        stepLower := strings.ToLower(e.Step)
+        if stepLower == "save" {
+            // only first key, dedupe by ID
             keys = keys[:1]
             idVal := deriveID(e)
             if seenSave[idVal] {
-                continue // skip duplicate save entry for same ID
+                continue
             }
             seenSave[idVal] = true
+        } else if stepLower == "restore" {
+            // choose hit key if available otherwise first key
+            var chosen string
+            if e.HitKey != "" {
+                chosen = e.HitKey
+            } else {
+                chosen = keys[0]
+            }
+            keys = []string{chosen}
         }
+
         for i, k := range keys {
             attempts = append(attempts, attempt{Entry: &e, Key: k, Pos: i + 1, Total: len(keys)})
         }
