@@ -42,7 +42,7 @@ func makeBorderless(w table.Writer) {
         PaddingLeft:  " ",
         PaddingRight: " ",
     }
-    st.Box.MiddleVertical = ' '
+    st.Box.MiddleVertical = " "
     st.Options.DrawBorder = false
     st.Options.SeparateRows = false
     w.SetStyle(st)
