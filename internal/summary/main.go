@@ -44,9 +44,25 @@ func main() {
     }
     defer f.Close()
 
+    dec := json.NewDecoder(f)
     var list []Entry
-    if err := json.NewDecoder(f).Decode(&list); err != nil {
-        log.Fatalf("unmarshal: %v", err)
+    if err := dec.Decode(&list); err != nil {
+        // reset and try map form
+        if _, err := f.Seek(0, 0); err != nil {
+            log.Fatalf("seek: %v", err)
+        }
+        var m map[string][]Entry
+        if err2 := json.NewDecoder(f).Decode(&m); err2 != nil {
+            log.Fatalf("unmarshal: %v", err)
+        }
+        for phase, arr := range m {
+            for i := range arr {
+                if arr[i].Step == "" {
+                    arr[i].Step = phase
+                }
+                list = append(list, arr[i])
+            }
+        }
     }
 
     if len(list) == 0 {
