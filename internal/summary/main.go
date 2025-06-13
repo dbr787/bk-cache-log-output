@@ -38,7 +38,11 @@ func colorize(s, code string) string { return fmt.Sprintf("\033[%sm%s\033[0m", c
 
 func makeBorderless(w table.Writer) {
     st := table.StyleDefault
-    st.Box = table.BoxStyle{}
+    st.Box = table.BoxStyle{
+        PaddingLeft:  " ",
+        PaddingRight: " ",
+    }
+    st.Box.MiddleVertical = ' '
     st.Options.DrawBorder = false
     st.Options.SeparateRows = false
     w.SetStyle(st)
