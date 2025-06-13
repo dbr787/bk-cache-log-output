@@ -51,14 +51,16 @@ func main() {
     green := color.New(color.FgGreen).SprintFunc()
     red := color.New(color.FgRed).SprintFunc()
 
-    t.AppendHeader(table.Row{"STEP", "DURATION", "CACHE HIT", "SIZE", "TRANSFER SPEED", "FILES"}, headerColors)
+    headers := []string{"STEP", "DURATION", "CACHE HIT", "SIZE", "TRANSFER SPEED", "FILES", "CACHE REGISTRY"}
+    t.AppendHeader(table.Row(headers...), headerColors)
 
     for _, s := range steps {
         hit := red("❌")
         if s.CacheHit {
             hit = green("✅")
         }
-        t.AppendRow(table.Row{s.Step, s.Duration, hit, s.Size, s.TransferSpeed, s.Files})
+        values := []string{s.Step, s.Duration, fmt.Sprintf("%v", s.CacheHit), s.Size, s.TransferSpeed, fmt.Sprintf("%d", s.Files), "MyCacheRegistry"}
+        t.AppendRow(table.Row(values...))
     }
 
     fmt.Println(t.Render())
