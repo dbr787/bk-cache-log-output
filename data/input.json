@@ -6,6 +6,7 @@
     "size": "-",
     "transfer_speed": "-",
     "files": 0,
+    "dirs": 0,
     "cache_registry": "MyCacheRegistry"
   },
   {
@@ -15,6 +16,7 @@
     "size": "25MB",
     "transfer_speed": "2.0MB/s",
     "files": 142,
+    "dirs": 10,
     "cache_registry": "MyCacheRegistry"
   }
 ]

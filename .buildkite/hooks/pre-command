@@ -4,4 +4,3 @@ link='\033]1339;url=https://buildkite.com/docs;content=Cache Restore\a'
 echo -e "+++ :buildkite: $link"
 docker run --rm -v "$PWD":/workdir -w /workdir golang:1.22-alpine \
   go run ./internal/summary --phase Restore --json data/input.json || true
-echo '---'

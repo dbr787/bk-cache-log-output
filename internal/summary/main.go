@@ -19,6 +19,7 @@ type Step struct {
     Size          string `json:"size"`
     TransferSpeed string `json:"transfer_speed"`
     Files         int    `json:"files"`
+    Dirs          int    `json:"dirs"`
     CacheRegistry string `json:"cache_registry"`
 }
 
@@ -52,14 +53,14 @@ func main() {
     green := color.New(color.FgGreen).SprintFunc()
     red := color.New(color.FgRed).SprintFunc()
 
-    t.AppendHeader(table.Row{"STEP", "DURATION", "CACHE HIT", "SIZE", "TRANSFER SPEED", "FILES", "CACHE REGISTRY"}, headerColors)
+    t.AppendHeader(table.Row{"STEP", "DURATION", "CACHE HIT", "SIZE", "TRANSFER SPEED", "FILES", "DIRS", "CACHE REGISTRY"}, headerColors)
 
     for _, s := range steps {
         hit := red("❌")
         if s.CacheHit {
             hit = green("✅")
         }
-        row := table.Row{s.Step, s.Duration, hit, s.Size, s.TransferSpeed, s.Files, s.CacheRegistry}
+        row := table.Row{s.Step, s.Duration, hit, s.Size, s.TransferSpeed, s.Files, s.Dirs, s.CacheRegistry}
         t.AppendRow(row)
     }
 
