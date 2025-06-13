@@ -73,9 +73,9 @@ func main() {
     headers := []string{"OP", "REGISTRY", "CACHE", "HIT", "DURATION"}
     if any(list, func(e Entry) bool { return e.Dirs != 0 }) { headers = append(headers, "DIRS") }
     if any(list, func(e Entry) bool { return e.Files != 0 }) { headers = append(headers, "FILES") }
-    if any(list, func(e Entry) bool { return e.BytesWritten != "" }) { headers = append(headers, "BYTES WRITTEN") }
-    if any(list, func(e Entry) bool { return e.CompressionRatio != "" }) { headers = append(headers, "COMPRESSION RATIO") }
-    if any(list, func(e Entry) bool { return e.BytesTransferred != "" }) { headers = append(headers, "DATA XFER") }
+    if any(list, func(e Entry) bool { return e.BytesWritten != "" }) { headers = append(headers, "SIZE") }
+    if any(list, func(e Entry) bool { return e.CompressionRatio != "" }) { headers = append(headers, "COMP") }
+    if any(list, func(e Entry) bool { return e.BytesTransferred != "" }) { headers = append(headers, "XFER") }
     if any(list, func(e Entry) bool { return e.TransferSpeed != "" }) { headers = append(headers, "SPEED") }
 
     t := table.NewWriter()
@@ -102,9 +102,9 @@ func main() {
         row = append(row, hit, e.Duration)
         if contains(headers, "DIRS") { row = append(row, e.Dirs) }
         if contains(headers, "FILES") { row = append(row, e.Files) }
-        if contains(headers, "BYTES WRITTEN") { row = append(row, e.BytesWritten) }
-        if contains(headers, "COMPRESSION RATIO") { row = append(row, e.CompressionRatio) }
-        if contains(headers, "DATA XFER") { row = append(row, e.BytesTransferred) }
+        if contains(headers, "SIZE") { row = append(row, e.BytesWritten) }
+        if contains(headers, "COMP") { row = append(row, e.CompressionRatio) }
+        if contains(headers, "XFER") { row = append(row, e.BytesTransferred) }
         if contains(headers, "SPEED") { row = append(row, e.TransferSpeed) }
         t.AppendRow(row)
     }
