@@ -273,7 +273,9 @@ func main() {
         add("Action", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
         // ID row (second row)
         add("ID", idVal)
-        add("Key", keyDisplay)
+        // key display with actual cache key + attempt indicator suffix
+        fullKey := fmt.Sprintf("%s %s", at.Key, keyDisplay)
+        add("Key", fullKey)
 
         // Result row with Hit/Miss/Saved wording (pre-computed above)
         add("Result", resText)
