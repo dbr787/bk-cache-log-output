@@ -90,8 +90,19 @@ func main() {
         return
     }
 
-    headers := []string{"OP", "REGISTRY", "KEY", "RESULT", "TIME", "SIZE"}
+    headers := []string{"OP", "ID", "KEY", "RESULT", "TIME", "SIZE"}
     // summary table limited columns only
+
+    deriveID := func(e Entry) string {
+        p := strings.ToLower(e.Path)
+        if strings.Contains(p, "node_modules") || strings.Contains(strings.ToLower(e.Cache), "npm") {
+            return "node"
+        }
+        if strings.Contains(p, "cypress") {
+            return "cypress"
+        }
+        return "-"
+    }
 
     // Build expanded list where each attempted key is its own row/detail
     type attempt struct {
@@ -128,19 +139,15 @@ func main() {
         stepLower := strings.ToLower(e.Step)
 
         // determine key to display
-        keyDisplay := at.Key
-        if at.Total > 1 {
-            keyDisplay = fmt.Sprintf("%s [%d/%d]", keyDisplay, at.Pos, at.Total)
-        }
+        keyDisplay := fmt.Sprintf("[%d/%d]", at.Pos, at.Total)
 
         // determine result string
-        result := red("💨")
         if stepLower == "save" {
-            result = green("✅")
+            result := green("Saved")
+        } else if at.Key == e.HitKey && at.Key != "" {
+            result := green("🎯 Hit")
         } else {
-            if at.Key == e.HitKey && at.Key != "" {
-                result = green("✅")
-            }
+            result := red("💨 Miss")
         }
 
         size := e.BytesWritten
@@ -150,7 +157,8 @@ func main() {
 
         opVal := fmt.Sprintf("%02d", idx+1)
 
-        row := table.Row{opVal, e.CacheRegistry, keyDisplay, result, e.Duration, size}
+        idVal := deriveID(*e)
+        row := table.Row{opVal, idVal, keyDisplay, result, e.Duration, size}
         t.AppendRow(row)
     }
     summaryStr := t.Render()
@@ -161,10 +169,7 @@ func main() {
     for idx, at := range attempts {
         e := at.Entry
         stepLower := strings.ToLower(e.Step)
-        keyDisplay := at.Key
-        if at.Total > 1 {
-            keyDisplay = fmt.Sprintf("%s [%d/%d]", keyDisplay, at.Pos, at.Total)
-        }
+        keyDisplay := fmt.Sprintf("[%d/%d]", at.Pos, at.Total)
         icon := map[string]string{"save": "💾", "restore": "♻️"}[stepLower]
         header := fmt.Sprintf("%s Operation %02d: %s \"%s\"", icon, idx+1, strings.Title(e.Step), keyDisplay)
 
@@ -187,19 +192,15 @@ func main() {
         }
 
         // Result row with Hit/Miss/Saved wording
-        var resWord string
-        var resColor string
+        var resText string
         if stepLower == "save" {
-            resWord = "Saved"
-            resColor = "92" // green
+            resText = green("Saved")
         } else if at.Key == e.HitKey && at.Key != "" {
-            resWord = "Hit"
-            resColor = "92"
+            resText = green("🎯 Hit")
         } else {
-            resWord = "Miss"
-            resColor = "91" // red
+            resText = red("💨 Miss")
         }
-        add("Result", colorize(resWord, resColor))
+        add("Result", resText)
 
         add("Operation", fmt.Sprintf("%s %s", strings.Title(e.Step), icon))
         add("Registry", e.CacheRegistry)
