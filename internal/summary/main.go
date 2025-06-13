@@ -99,8 +99,9 @@ func main() {
         if p == "restore" {
             emoji = "♻️"
         }
-        titleRow := table.Row{fmt.Sprintf("%s %s Cache", emoji, strings.Title(p))}
-        t.AppendHeader(titleRow, table.RowConfig{AutoMerge: true})
+        titleCells := make(table.Row, len(headers))
+        titleCells[0] = fmt.Sprintf("%s %s Cache", emoji, strings.Title(p))
+        t.AppendHeader(titleCells, table.RowConfig{AutoMerge: true})
 
         coloredHeader := make(table.Row, len(headers))
         for i, h := range headers {
