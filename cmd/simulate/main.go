@@ -18,6 +18,7 @@ type Entry struct {
 
 func printVerboseRestoreExample() {
     steps := []string{
+        "",
         "  ♻️ Starting restore for id: dist",
         "  🔍 Searching for registry: default",
         "  ✅ Found registry: default",
@@ -50,6 +51,7 @@ func printVerboseRestoreExample() {
         "\033[32m│\033[0m Extraction:    1.8 GB in 19.6 s                   \033[32m│\033[0m",
         "\033[32m│\033[0m Total time:    24.0 s                             \033[32m│\033[0m",
         "\033[32m╰───────────────────────────────────────────────────╯\033[0m",
+        "",
     }
 
     for i, l := range steps {
