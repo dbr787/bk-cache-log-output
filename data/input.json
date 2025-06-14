@@ -5,7 +5,7 @@
     "registry": "team-registry",
     "cache_hit": true,
     "duration": "850ms",
-    "paths": "./node_modules\n.next/cache",
+    "paths": "./POOPOO_modules\n.next/cache",
     "checksum_file": "package-lock.json",
     "checksum_sha": "7f3a...d1c",
     "compression_format": "zstd",
@@ -15,8 +15,8 @@
     "transfer_speed": "11.3MB/s",
     "started_at": "2025-06-13T08:33:10.010Z",
     "completed_at": "2025-06-13T08:33:10.860Z",
-    "attempted_keys": ["node-linux-x86_64-7f3ad1c", "node-linux-x86_64-latest"],
-    "hit_key": "node-linux-x86_64-7f3ad1c"
+    "attempted_keys": ["POOPOO-linux-x86_64-7f3ad1c", "POOPOO-linux-x86_64-latest"],
+    "hit_key": "POOPOO-linux-x86_64-7f3ad1c"
   },
   {
     "action": "restore",
@@ -45,7 +45,7 @@
     "cache": "npm-cache-v1",
     "registry": "team-registry",
     "duration": "8.8s",
-    "paths": "./node_modules\n.next/cache",
+    "paths": "./POOPOO_modules\n.next/cache",
     "compressed_size": "350MB",
     "uncompressed_size": "1GB",
     "transfer_speed": "40.0MB/s",
@@ -73,7 +73,7 @@
     "cache": "npm-cache-v1",
     "registry": "team-registry",
     "duration": "5.3s",
-    "paths": "./node_modules\n.next/cache",
+    "paths": "./POOPOO_modules\n.next/cache",
     "compressed_size": "160MB",
     "uncompressed_size": "480MB",
     "compression_ratio": "3.0x",
