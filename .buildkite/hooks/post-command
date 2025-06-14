@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
 echo -e "+++ :buildkite: \033[32mCache Save 💾\033[0m"
-docker pull -q golang:1.22-alpine >/dev/null 2>&1 || true
-out=$(docker run --rm -v "$PWD":/workdir -w /workdir golang:1.22-alpine \
-  go run ./internal/summary --filter save --json data/input.json 2>&1 || true)
-printf "%s\n" "$out" | grep -Ev '^(go:|Unable to find|[0-9a-f]{12}:|Status:|Digest:|Downloading|Pull complete|Pulling)'
-:
+
+docker run --rm -v "$PWD":/workdir -w /workdir golang:1.22-alpine \
+  go run ./cmd/simulate/main.go --filter save --json data/input.json

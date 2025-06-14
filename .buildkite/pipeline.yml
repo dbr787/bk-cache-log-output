@@ -1,7 +1,3 @@
 steps:
-  - label: ":golang: Generate cache log table"
-    plugins:
-      - docker#v3.9.0:
-          image: golang:1.22-alpine
-          hooks: true
-    command: "go run ./cmd/generate_log data/input.json"
+  - label: "Simulate Cache Log Output"
+    command: true
