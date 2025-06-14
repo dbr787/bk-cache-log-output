@@ -1,4 +1,3 @@
 steps:
   - label: "Simulate Cache Log Output"
-    command: "echo hello world"
-    # command: true
+    command: true
