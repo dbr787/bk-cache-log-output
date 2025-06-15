@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo -e "+++ :buildkite: \033[35mCache Restore ♻️\033[0m"
+echo -e "+++ :buildkite: \033[34mCache Restore ♻️\033[0m"
 
 docker run --rm -v "$PWD":/workdir -w /workdir golang:1.22-alpine \
   go run ./cmd/simulate/main.go --filter restore --json data/input.json
